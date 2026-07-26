@@ -21,10 +21,10 @@
     }
   </script>
 
-  <!-- Complete Work Log Stylesheet with Explicit Upcoming Dates & Bottom Tools -->
+  <!-- Complete Work Log Stylesheet -->
   <style>
 /* ==========================================================================
-   Daily Work Log - Work Log Streamlined Layout & Upcoming Date Formatting
+   Daily Work Log - Work Log Stylesheet with Fixed Event Delegation & Clean UI
    ========================================================================== */
 
 :root {
@@ -108,7 +108,7 @@ body {
   padding: 20px 16px 80px;
 }
 
-/* ① 【最上方】頁首標題 */
+/* ① 【最上方】頁首標題 Header */
 .app-header {
   margin-bottom: 16px;
 }
@@ -144,7 +144,7 @@ body {
   color: var(--text-secondary);
 }
 
-/* ① 【最上方】新增紀錄核心區塊 */
+/* ① 【最上方】新增紀錄輸入區塊 */
 .quick-input-card {
   background: var(--bg-card);
   backdrop-filter: blur(12px);
@@ -317,25 +317,6 @@ body {
   gap: 10px;
 }
 
-/* ② 「未來預定」專用日期標頭與卡片清單 */
-.upcoming-date-subgroup {
-  margin-bottom: 10px;
-}
-
-.upcoming-date-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(168, 85, 247, 0.15);
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: var(--radius-sm);
-  margin-bottom: 6px;
-}
-
 /* ③ 雙層手風琴樣式 */
 .year-accordion-group {
   margin-top: 10px;
@@ -481,9 +462,10 @@ body {
 }
 
 .date-badge-inline {
-  background: rgba(168, 85, 247, 0.15);
+  background: rgba(168, 85, 247, 0.18);
   color: #c084fc;
-  font-size: 0.725rem;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  font-size: 0.75rem;
   padding: 2px 8px;
   border-radius: 10px;
   font-weight: 600;
@@ -1049,7 +1031,7 @@ body {
   <!-- Toast Notifications -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Unified Application Script -->
+  <!-- Unified Script with Robust Event Delegation -->
   <script>
 (function() {
   'use strict';
@@ -1504,6 +1486,7 @@ body {
 
       document.getElementById('btn-save-edit')?.addEventListener('click', () => this.handleSaveTaskEdit());
 
+      // Auto close pop-up context menus when tapping outside
       document.addEventListener('click', (e) => {
         if (!e.target.closest('.task-actions')) {
           this.closeAllContextMenus();
@@ -1567,13 +1550,8 @@ body {
       const todayTasks = allTasks.filter(t => t.targetDate === today);
       const historyTasks = allTasks.filter(t => t.targetDate < today);
 
-      // Group upcoming tasks by future date (sorted ascending: earliest upcoming date first)
-      const upcomingTree = {};
-      upcomingTasks.forEach(task => {
-        if (!upcomingTree[task.targetDate]) upcomingTree[task.targetDate] = [];
-        upcomingTree[task.targetDate].push(task);
-      });
-      const sortedUpcomingDates = Object.keys(upcomingTree).sort((a, b) => a.localeCompare(b));
+      // Sort upcoming tasks chronologically (earliest future date first)
+      upcomingTasks.sort((a, b) => a.targetDate.localeCompare(b.targetDate));
 
       // Build Two-Tier History Tree
       const historyTree = {};
@@ -1619,7 +1597,7 @@ body {
 
       let html = '';
 
-      // ② 【第二區塊】📌 未來預定 (帶有明確 YYYY-MM-DD (週幾) 日期標頭)
+      // ② 【第二區塊】📌 未來預定 (簡潔卡片，日期直接標註於卡片標籤上)
       if (upcomingTasks.length > 0 && !this.searchQuery) {
         html += `
           <div class="timeline-group">
@@ -1636,17 +1614,8 @@ body {
               </button>
             </div>
 
-            <div class="upcoming-container" id="upcoming-card-list" style="display: ${this.upcomingCollapsed ? 'none' : 'flex'}; flex-direction: column; gap: 14px; padding-left: 46px;">
-              ${sortedUpcomingDates.map(dateStr => `
-                <div class="upcoming-date-subgroup">
-                  <div class="upcoming-date-badge">
-                    📅 ${formatDateDisplay(dateStr)}
-                  </div>
-                  <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
-                    ${upcomingTree[dateStr].map(t => this.renderTaskCardHTML(t, true)).join('')}
-                  </div>
-                </div>
-              `).join('')}
+            <div class="timeline-card-list" id="upcoming-card-list" style="display: ${this.upcomingCollapsed ? 'none' : 'flex'};">
+              ${upcomingTasks.map(t => this.renderTaskCardHTML(t, true)).join('')}
             </div>
           </div>
         `;
@@ -1779,41 +1748,52 @@ body {
       `;
     }
 
+    // Robust Event Delegation for 100% Reliable Delete, Edit, and Toggle Actions
     bindTimelineEvents() {
-      document.getElementById('toggle-upcoming-btn')?.addEventListener('click', () => {
-        this.upcomingCollapsed = !this.upcomingCollapsed;
-        this.renderTimelineStream();
-      });
+      const container = document.getElementById('timeline-stream');
+      if (!container) return;
 
-      document.querySelectorAll('[data-toggle-year]').forEach(header => {
-        header.addEventListener('click', (e) => {
-          const year = e.currentTarget.getAttribute('data-toggle-year');
+      container.onclick = (e) => {
+        // 1. Toggle Upcoming Group
+        const toggleUpcoming = e.target.closest('#toggle-upcoming-btn');
+        if (toggleUpcoming) {
+          this.upcomingCollapsed = !this.upcomingCollapsed;
+          this.renderTimelineStream();
+          return;
+        }
+
+        // 2. Toggle Year Accordion
+        const yearHeader = e.target.closest('[data-toggle-year]');
+        if (yearHeader) {
+          const year = yearHeader.getAttribute('data-toggle-year');
           if (this.expandedYears.has(year)) {
             this.expandedYears.delete(year);
           } else {
             this.expandedYears.add(year);
           }
           this.renderTimelineStream();
-        });
-      });
+          return;
+        }
 
-      document.querySelectorAll('[data-toggle-month]').forEach(header => {
-        header.addEventListener('click', (e) => {
+        // 3. Toggle Month Accordion
+        const monthHeader = e.target.closest('[data-toggle-month]');
+        if (monthHeader) {
           e.stopPropagation();
-          const month = e.currentTarget.getAttribute('data-toggle-month');
+          const month = monthHeader.getAttribute('data-toggle-month');
           if (this.expandedMonths.has(month)) {
             this.expandedMonths.delete(month);
           } else {
             this.expandedMonths.add(month);
           }
           this.renderTimelineStream();
-        });
-      });
+          return;
+        }
 
-      document.querySelectorAll('[data-action="toggle-menu"]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        // 4. Toggle Context Menu (Three Dots ⋮)
+        const menuToggleBtn = e.target.closest('[data-action="toggle-menu"]');
+        if (menuToggleBtn) {
           e.stopPropagation();
-          const actionsContainer = e.currentTarget.closest('.task-actions');
+          const actionsContainer = menuToggleBtn.closest('.task-actions');
           const menu = actionsContainer?.querySelector('.task-context-menu');
           const isCurrentlyOpen = menu && menu.style.display === 'flex';
 
@@ -1821,36 +1801,42 @@ body {
 
           if (menu && !isCurrentlyOpen) {
             menu.style.display = 'flex';
-            btn.classList.add('active');
+            menuToggleBtn.classList.add('active');
           }
-        });
-      });
+          return;
+        }
 
-      document.querySelectorAll('.task-context-menu [data-action="edit"]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        // 5. Edit Action
+        const editBtn = e.target.closest('[data-action="edit"]');
+        if (editBtn) {
           e.stopPropagation();
-          this.closeAllContextMenus();
-          const card = e.currentTarget.closest('.task-card');
+          const card = editBtn.closest('.task-card');
           const id = card?.getAttribute('data-task-id');
-          if (id) this.openEditModal(id);
-        });
-      });
-
-      document.querySelectorAll('.task-context-menu [data-action="delete"]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
           this.closeAllContextMenus();
-          const card = e.currentTarget.closest('.task-card');
+          if (id) this.openEditModal(id);
+          return;
+        }
+
+        // 6. Delete Action (Fixed & Guaranteed Execution)
+        const deleteBtn = e.target.closest('[data-action="delete"]');
+        if (deleteBtn) {
+          e.stopPropagation();
+          const card = deleteBtn.closest('.task-card');
           const id = card?.getAttribute('data-task-id');
           const task = this.store.getAllTasks().find(t => t.id === id);
+          this.closeAllContextMenus();
 
-          if (id && confirm(`⚠️ 二次確認：\n您確定要刪除「${task ? task.title : '這筆事項'}」工作紀錄嗎？`)) {
-            this.store.deleteTask(id);
-            this.showToast('紀錄已成功刪除');
-            this.renderTimelineStream();
+          if (id) {
+            const taskTitle = task ? task.title : '這筆事項';
+            if (confirm(`⚠️ 二次確認：\n您確定要刪除「${taskTitle}」這筆工作紀錄嗎？`)) {
+              this.store.deleteTask(id);
+              this.showToast('紀錄已成功刪除！');
+              this.renderTimelineStream();
+            }
           }
-        });
-      });
+          return;
+        }
+      };
     }
 
     openClearModal() {
