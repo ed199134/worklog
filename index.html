@@ -21,10 +21,10 @@
     }
   </script>
 
-  <!-- Complete RWD Work Log CSS Stylesheet with Two-Tier Accordion -->
+  <!-- Complete Work Log Stylesheet with Explicit Upcoming Dates & Bottom Tools -->
   <style>
 /* ==========================================================================
-   Daily Work Log - Two-Tier Foldable Accordion Stylesheet
+   Daily Work Log - Work Log Streamlined Layout & Upcoming Date Formatting
    ========================================================================== */
 
 :root {
@@ -108,14 +108,9 @@ body {
   padding: 20px 16px 80px;
 }
 
-/* Header RWD Layout */
+/* ① 【最上方】頁首標題 */
 .app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .brand-title {
@@ -149,103 +144,14 @@ body {
   color: var(--text-secondary);
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.btn-report-quick {
-  background: var(--accent-gradient);
-  color: white;
-  border: none;
-  border-radius: var(--radius-md);
-  padding: 8px 14px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 3px 10px var(--accent-glow);
-  transition: var(--transition-fast);
-  white-space: nowrap;
-  min-height: 40px;
-}
-
-.btn-report-quick:hover {
-  transform: translateY(-1px);
-  opacity: 0.95;
-}
-
-.btn-icon {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  height: 40px;
-  padding: 0 10px;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 0.85rem;
-  transition: var(--transition-fast);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.btn-icon:hover {
-  background: var(--bg-tertiary);
-  border-color: var(--border-color-hover);
-}
-
-/* Global Search Bar */
-.search-bar-row {
-  margin-bottom: 20px;
-}
-
-.search-box {
-  position: relative;
-  width: 100%;
-}
-
-.search-box input {
-  width: 100%;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 10px 14px 10px 38px;
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  outline: none;
-  transition: var(--transition-fast);
-  min-height: 44px;
-}
-
-.search-box input:focus {
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-}
-
-/* Quick Input Box */
+/* ① 【最上方】新增紀錄核心區塊 */
 .quick-input-card {
   background: var(--bg-card);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   box-shadow: var(--shadow-md);
   transition: var(--transition-fast);
 }
@@ -330,7 +236,7 @@ body {
   transform: translateY(-1px);
 }
 
-/* Vertical Timeline Stream Container */
+/* ② & ③ 時間軸 Stream 容器 */
 .timeline-stream {
   position: relative;
   display: flex;
@@ -411,11 +317,26 @@ body {
   gap: 10px;
 }
 
-/* ==========================================================================
-   Two-Tier Accordion Component Styles
-   ========================================================================== */
+/* ② 「未來預定」專用日期標頭與卡片清單 */
+.upcoming-date-subgroup {
+  margin-bottom: 10px;
+}
 
-/* Tier 1: Year Group */
+.upcoming-date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+}
+
+/* ③ 雙層手風琴樣式 */
 .year-accordion-group {
   margin-top: 10px;
   background: var(--bg-card);
@@ -460,7 +381,6 @@ body {
   transition: transform var(--transition-fast);
 }
 
-/* Tier 2: Month Group */
 .month-accordion-group {
   margin: 12px 14px;
   background: var(--bg-secondary);
@@ -504,7 +424,7 @@ body {
   gap: 16px;
 }
 
-/* Task Item Card inside Month Accordion */
+/* Task Item Card */
 .task-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -558,6 +478,15 @@ body {
   padding: 2px 8px;
   border-radius: 10px;
   font-weight: 500;
+}
+
+.date-badge-inline {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  font-size: 0.725rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 .task-actions {
@@ -638,6 +567,105 @@ body {
 
 .task-context-menu .menu-item.danger:hover {
   background: rgba(239, 68, 68, 0.15);
+}
+
+/* ④ 【最下方】底部工具區 (Bottom Tools & Search Bar) */
+.app-footer-tools {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.search-bar-row {
+  width: 100%;
+}
+
+.search-box {
+  position: relative;
+  width: 100%;
+}
+
+.search-box input {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 14px 10px 38px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition-fast);
+  min-height: 44px;
+}
+
+.search-box input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-report-quick {
+  background: var(--accent-gradient);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 3px 10px var(--accent-glow);
+  transition: var(--transition-fast);
+  white-space: nowrap;
+  min-height: 40px;
+}
+
+.btn-report-quick:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+.btn-icon {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.875rem;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-icon:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color-hover);
 }
 
 /* Modals */
@@ -818,7 +846,7 @@ body {
 <body>
 
   <div class="app-container">
-    <!-- Streamlined Header -->
+    <!-- ① 【最上方】頁首標題 Header -->
     <header class="app-header">
       <div class="brand-title">
         <div class="brand-icon">📝</div>
@@ -827,8 +855,39 @@ body {
           <p>極簡單頁式工作日誌與時間軸</p>
         </div>
       </div>
+    </header>
 
-      <div class="header-actions">
+    <!-- ① 【最上方】新增紀錄輸入區塊 -->
+    <section class="quick-input-card">
+      <div class="input-main-row">
+        <input type="text" id="quick-task-title" placeholder="新增紀錄或未來待辦 (支援輸入 #標籤，按 Enter 快速送出)..." autofocus>
+        
+        <div class="date-selector-wrap">
+          <span>日期：</span>
+          <input type="date" id="quick-task-date">
+        </div>
+
+        <button class="btn-add" id="btn-add-task">
+          新增
+        </button>
+      </div>
+    </section>
+
+    <!-- ② 未來預定區塊 + ③ 歷史時間軸 (Timeline Stream) -->
+    <main id="timeline-stream" class="timeline-stream">
+      <!-- Rendered dynamically -->
+    </main>
+
+    <!-- ④ 【最下方】底部工具區 (搜尋欄 + 功能按鈕列) -->
+    <footer class="app-footer-tools">
+      <div class="search-bar-row">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" placeholder="搜尋全站歷史紀錄或 #標籤...">
+        </div>
+      </div>
+
+      <div class="footer-actions">
         <button class="btn-report-quick" id="btn-open-report" title="一鍵生成本週週報">
           📋 複製本週週報
         </button>
@@ -845,36 +904,7 @@ body {
           🌓
         </button>
       </div>
-    </header>
-
-    <!-- Global Search Bar -->
-    <div class="search-bar-row">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="search-input" placeholder="搜尋全站歷史紀錄或 #標籤...">
-      </div>
-    </div>
-
-    <!-- Quick Input Area -->
-    <section class="quick-input-card">
-      <div class="input-main-row">
-        <input type="text" id="quick-task-title" placeholder="新增紀錄或未來待辦 (支援輸入 #標籤，按 Enter 快速送出)..." autofocus>
-        
-        <div class="date-selector-wrap">
-          <span>日期：</span>
-          <input type="date" id="quick-task-date">
-        </div>
-
-        <button class="btn-add" id="btn-add-task">
-          新增
-        </button>
-      </div>
-    </section>
-
-    <!-- Reverse-chronological Vertical Timeline Stream -->
-    <main id="timeline-stream" class="timeline-stream">
-      <!-- Rendered dynamically with Two-Tier Accordion -->
-    </main>
+    </footer>
   </div>
 
   <!-- Excel / CSV / JSON Import Modal -->
@@ -1019,7 +1049,7 @@ body {
   <!-- Toast Notifications -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Unified Script with Two-Tier Accordion -->
+  <!-- Unified Application Script -->
   <script>
 (function() {
   'use strict';
@@ -1378,7 +1408,7 @@ body {
   }
 
   /* ==========================================================================
-     3. STREAMLINED TIMELINE APP CONTROLLER WITH TWO-TIER ACCORDION
+     3. STREAMLINED TIMELINE APP CONTROLLER
      ========================================================================== */
   class DailyWorkLogApp {
     constructor() {
@@ -1387,7 +1417,6 @@ body {
       this.editingTaskId = null;
       this.upcomingCollapsed = false;
 
-      // Accordion state sets
       this.expandedYears = new Set();
       this.expandedMonths = new Set();
       this.accordionInitialized = false;
@@ -1538,10 +1567,16 @@ body {
       const todayTasks = allTasks.filter(t => t.targetDate === today);
       const historyTasks = allTasks.filter(t => t.targetDate < today);
 
-      // Build Two-Tier History Tree: { Year: { Month: { Date: [tasks] } } }
-      const historyTree = {};
-      let totalHistoryCount = 0;
+      // Group upcoming tasks by future date (sorted ascending: earliest upcoming date first)
+      const upcomingTree = {};
+      upcomingTasks.forEach(task => {
+        if (!upcomingTree[task.targetDate]) upcomingTree[task.targetDate] = [];
+        upcomingTree[task.targetDate].push(task);
+      });
+      const sortedUpcomingDates = Object.keys(upcomingTree).sort((a, b) => a.localeCompare(b));
 
+      // Build Two-Tier History Tree
+      const historyTree = {};
       historyTasks.forEach(task => {
         const parts = task.targetDate.split('-');
         if (parts.length !== 3) return;
@@ -1556,12 +1591,10 @@ body {
         historyTree[year].count++;
         historyTree[year].months[monthKey].count++;
         historyTree[year].months[monthKey].dates[dateKey].push(task);
-        totalHistoryCount++;
       });
 
       const sortedYears = Object.keys(historyTree).sort((a, b) => b.localeCompare(a));
 
-      // Auto-expand latest year and latest month on initial render
       if (!this.accordionInitialized && sortedYears.length > 0) {
         const latestYear = sortedYears[0];
         this.expandedYears.add(latestYear);
@@ -1578,7 +1611,7 @@ body {
           <div class="empty-state">
             <div style="font-size: 36px; margin-bottom: 8px;">✨</div>
             <h4>目前尚無任何工作紀錄</h4>
-            <p>在上方輸入框填寫事項按 Enter，或點擊右上角「📊 匯入」載入 Excel/CSV/JSON 紀錄。</p>
+            <p>在上方輸入框填寫事項按 Enter，或點擊頁尾「📊 匯入」載入 Excel/CSV/JSON 紀錄。</p>
           </div>
         `;
         return;
@@ -1586,7 +1619,7 @@ body {
 
       let html = '';
 
-      // 1. 📌 Upcoming Section
+      // ② 【第二區塊】📌 未來預定 (帶有明確 YYYY-MM-DD (週幾) 日期標頭)
       if (upcomingTasks.length > 0 && !this.searchQuery) {
         html += `
           <div class="timeline-group">
@@ -1595,21 +1628,31 @@ body {
                 <div class="node-bullet upcoming">📌</div>
                 <div class="node-title">
                   <span>未來預定 (Upcoming)</span>
-                  <span class="count-tag">${upcomingTasks.length}</span>
+                  <span class="count-tag">${upcomingTasks.length} 項</span>
                 </div>
               </div>
               <button class="btn-toggle-group" id="toggle-upcoming-btn">
                 ${this.upcomingCollapsed ? '展開 ▶' : '摺疊 ▼'}
               </button>
             </div>
-            <div class="timeline-card-list" id="upcoming-card-list" style="display: ${this.upcomingCollapsed ? 'none' : 'flex'};">
-              ${upcomingTasks.map(t => this.renderTaskCardHTML(t)).join('')}
+
+            <div class="upcoming-container" id="upcoming-card-list" style="display: ${this.upcomingCollapsed ? 'none' : 'flex'}; flex-direction: column; gap: 14px; padding-left: 46px;">
+              ${sortedUpcomingDates.map(dateStr => `
+                <div class="upcoming-date-subgroup">
+                  <div class="upcoming-date-badge">
+                    📅 ${formatDateDisplay(dateStr)}
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+                    ${upcomingTree[dateStr].map(t => this.renderTaskCardHTML(t, true)).join('')}
+                  </div>
+                </div>
+              `).join('')}
             </div>
           </div>
         `;
       }
 
-      // 2. 📅 Today Section
+      // ③ 【第三區塊】📅 今天
       html += `
         <div class="timeline-group">
           <div class="timeline-header">
@@ -1630,7 +1673,7 @@ body {
         </div>
       `;
 
-      // 3. 📂 Two-Tier Foldable History Accordion Stream
+      // ③ 【第三區塊】📂 歷史時間軸 (折疊式年月目錄)
       if (sortedYears.length > 0) {
         sortedYears.forEach(year => {
           const yearData = historyTree[year];
@@ -1706,17 +1749,18 @@ body {
       this.bindTimelineEvents();
     }
 
-    renderTaskCardHTML(task) {
+    renderTaskCardHTML(task, showInlineDate = false) {
       return `
         <div class="task-card" data-task-id="${task.id}">
           <div class="task-left">
             <div class="task-content-block">
               <div class="task-title">${this.escapeHTML(task.title)}</div>
-              ${task.tags && task.tags.length > 0 ? `
-                <div class="task-meta">
-                  ${task.tags.map(tag => `<span class="tag-badge">#${this.escapeHTML(tag)}</span>`).join('')}
-                </div>
-              ` : ''}
+              <div class="task-meta">
+                ${showInlineDate ? `<span class="date-badge-inline">📅 ${formatDateDisplay(task.targetDate)}</span>` : ''}
+                ${task.tags && task.tags.length > 0 ? 
+                  task.tags.map(tag => `<span class="tag-badge">#${this.escapeHTML(tag)}</span>`).join('') : ''
+                }
+              </div>
             </div>
           </div>
 
@@ -1736,13 +1780,11 @@ body {
     }
 
     bindTimelineEvents() {
-      // Toggle Upcoming
       document.getElementById('toggle-upcoming-btn')?.addEventListener('click', () => {
         this.upcomingCollapsed = !this.upcomingCollapsed;
         this.renderTimelineStream();
       });
 
-      // Toggle Year Accordion
       document.querySelectorAll('[data-toggle-year]').forEach(header => {
         header.addEventListener('click', (e) => {
           const year = e.currentTarget.getAttribute('data-toggle-year');
@@ -1755,7 +1797,6 @@ body {
         });
       });
 
-      // Toggle Month Accordion
       document.querySelectorAll('[data-toggle-month]').forEach(header => {
         header.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -1769,7 +1810,6 @@ body {
         });
       });
 
-      // Toggle Context Menu Trigger
       document.querySelectorAll('[data-action="toggle-menu"]').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -1786,7 +1826,6 @@ body {
         });
       });
 
-      // Edit Action inside Pop-up Menu
       document.querySelectorAll('.task-context-menu [data-action="edit"]').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -1797,7 +1836,6 @@ body {
         });
       });
 
-      // Delete Action with Double Confirmation Protection
       document.querySelectorAll('.task-context-menu [data-action="delete"]').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
