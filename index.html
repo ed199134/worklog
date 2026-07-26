@@ -2,8 +2,9 @@
 <html lang="zh-TW" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>個人工作日誌 - 極簡單頁式時間軸 (WorkLog Stream)</title>
+  
   <!-- Google Fonts - Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,11 +21,10 @@
     }
   </script>
 
-  <!-- Inline Complete CSS Stylesheet -->
+  <!-- Complete RWD CSS Stylesheet -->
   <style>
 /* ==========================================================================
-   Daily Work Log & Task Manager - Desktop-Consistent Layout Stylesheet
-   Design Concept: Consistent Desktop Proportions & Layout on All Devices
+   Daily Work Log & Task Manager - Unified RWD Stylesheet
    ========================================================================== */
 
 :root {
@@ -95,17 +95,12 @@
   --tag-text: #4338ca;
 }
 
-/* Base Reset & Smooth Horizontal Scroll Container */
+/* Reset & Touch Friendly Base */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-html, body {
-  min-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -121,32 +116,31 @@ body {
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-/* App Container - Unified Desktop Layout Proportions */
 .app-container {
   max-width: 880px;
-  min-width: 340px;
   margin: 0 auto;
-  padding: 24px 20px 80px;
+  padding: 20px 16px 80px;
 }
 
-/* Desktop Header Layout */
+/* Header RWD Layout */
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
-  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .brand-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .brand-icon {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   background: var(--accent-gradient);
   border-radius: var(--radius-md);
   display: flex;
@@ -159,23 +153,21 @@ body {
 }
 
 .brand-text h1 {
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  white-space: nowrap;
 }
 
 .brand-text p {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  white-space: nowrap;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
 .btn-report-quick {
@@ -183,7 +175,7 @@ body {
   color: white;
   border: none;
   border-radius: var(--radius-md);
-  padding: 8px 16px;
+  padding: 8px 14px;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -193,7 +185,7 @@ body {
   box-shadow: 0 3px 10px var(--accent-glow);
   transition: var(--transition-fast);
   white-space: nowrap;
-  min-height: 38px;
+  min-height: 40px;
 }
 
 .btn-report-quick:hover {
@@ -205,7 +197,7 @@ body {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  height: 38px;
+  height: 40px;
   padding: 0 10px;
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -224,7 +216,7 @@ body {
   border-color: var(--border-color-hover);
 }
 
-/* Search Bar */
+/* Global Search Bar */
 .search-bar-row {
   margin-bottom: 20px;
 }
@@ -241,10 +233,10 @@ body {
   border-radius: var(--radius-md);
   padding: 10px 14px 10px 38px;
   color: var(--text-primary);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   outline: none;
   transition: var(--transition-fast);
-  min-height: 40px;
+  min-height: 44px;
 }
 
 .search-box input:focus {
@@ -260,14 +252,14 @@ body {
   color: var(--text-muted);
 }
 
-/* Desktop Proportional Quick Input Card */
+/* Quick Input Box RWD */
 .quick-input-card {
   background: var(--bg-card);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 16px 20px;
-  margin-bottom: 28px;
+  padding: 16px;
+  margin-bottom: 24px;
   box-shadow: var(--shadow-md);
   transition: var(--transition-fast);
 }
@@ -280,12 +272,12 @@ body {
 .input-main-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .input-main-row input[type="text"] {
-  flex: 1;
-  min-width: 140px;
+  flex: 1 1 200px;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -293,7 +285,7 @@ body {
   font-size: 0.95rem;
   color: var(--text-primary);
   outline: none;
-  min-height: 42px;
+  min-height: 44px;
 }
 
 .input-main-row input[type="text"]:focus {
@@ -308,12 +300,12 @@ body {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 6px 12px;
+  min-height: 44px;
   flex-shrink: 0;
-  min-height: 42px;
 }
 
 .date-selector-wrap span {
-  font-size: 0.8rem;
+  font-size: 0.825rem;
   color: var(--text-muted);
   white-space: nowrap;
 }
@@ -340,11 +332,11 @@ body {
   white-space: nowrap;
   box-shadow: 0 4px 12px var(--accent-glow);
   transition: var(--transition-fast);
-  flex-shrink: 0;
-  min-height: 42px;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .btn-add:hover {
@@ -357,14 +349,13 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
 }
 
-/* Timeline Central Line Guide */
 .timeline-stream::before {
   content: '';
   position: absolute;
-  left: 19px;
+  left: 17px;
   top: 10px;
   bottom: 10px;
   width: 2px;
@@ -372,7 +363,6 @@ body {
   z-index: 0;
 }
 
-/* Timeline Group Section */
 .timeline-group {
   position: relative;
   z-index: 1;
@@ -389,46 +379,33 @@ body {
 .timeline-date-node {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .node-bullet {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--bg-secondary);
   border: 2px solid var(--accent-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  box-shadow: 0 0 0 4px var(--bg-primary);
+  font-size: 15px;
+  box-shadow: 0 0 0 3px var(--bg-primary);
   flex-shrink: 0;
 }
 
-.node-bullet.upcoming {
-  border-color: #a855f7;
-  color: #a855f7;
-}
-
-.node-bullet.today {
-  border-color: #3b82f6;
-  background: var(--accent-gradient);
-  color: white;
-}
-
-.node-bullet.past {
-  border-color: var(--text-muted);
-  color: var(--text-secondary);
-}
+.node-bullet.upcoming { border-color: #a855f7; color: #a855f7; }
+.node-bullet.today { border-color: #3b82f6; background: var(--accent-gradient); color: white; }
+.node-bullet.past { border-color: var(--text-muted); color: var(--text-secondary); }
 
 .node-title {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;
-  white-space: nowrap;
 }
 
 .count-tag {
@@ -450,39 +427,31 @@ body {
   padding: 4px 8px;
   border-radius: var(--radius-sm);
   transition: var(--transition-fast);
-  white-space: nowrap;
 }
 
-.btn-toggle-group:hover {
-  color: var(--text-primary);
-  background: var(--bg-secondary);
-}
-
-/* Group Task Card List */
 .timeline-card-list {
-  padding-left: 52px;
+  padding-left: 46px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Task Item Card */
+/* Task Item Card - Modern Flexible Layout */
 .task-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 14px 18px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  gap: 12px;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
 }
 
 .task-card:hover {
   border-color: var(--border-color-hover);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
 }
 
 .task-card.completed {
@@ -497,14 +466,14 @@ body {
 .task-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex: 1;
   min-width: 0;
 }
 
 .status-checkbox {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 6px;
   border: 2px solid var(--text-muted);
   background: transparent;
@@ -513,7 +482,7 @@ body {
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: bold;
   transition: var(--transition-fast);
   flex-shrink: 0;
@@ -548,19 +517,18 @@ body {
 .task-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin-top: 4px;
   flex-wrap: wrap;
 }
 
 .badge {
-  font-size: 0.725rem;
-  padding: 2px 8px;
+  font-size: 0.7rem;
+  padding: 2px 7px;
   border-radius: 4px;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
 }
 
 .badge.status-pending { background: var(--status-pending-bg); color: var(--status-pending-text); }
@@ -570,16 +538,15 @@ body {
 .tag-badge {
   background: var(--tag-bg);
   color: var(--tag-text);
-  font-size: 0.725rem;
-  padding: 2px 8px;
-  border-radius: 12px;
+  font-size: 0.7rem;
+  padding: 2px 7px;
+  border-radius: 10px;
 }
 
 .task-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
-  opacity: 0.85;
+  gap: 4px;
   flex-shrink: 0;
 }
 
@@ -587,13 +554,14 @@ body {
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 0.9rem;
   transition: var(--transition-fast);
 }
 
@@ -611,13 +579,13 @@ body {
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 20px;
+  padding: 16px;
 }
 
 .modal-content {
@@ -625,15 +593,15 @@ body {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   width: 100%;
-  max-width: 650px;
-  max-height: 85vh;
+  max-width: 600px;
+  max-height: 88vh;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-lg);
 }
 
 .modal-header {
-  padding: 18px 24px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
@@ -646,32 +614,32 @@ body {
 }
 
 .modal-body {
-  padding: 20px 24px;
+  padding: 18px 20px;
   overflow-y: auto;
   flex: 1;
 }
 
 .report-textarea {
   width: 100%;
-  height: 280px;
+  height: 260px;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 14px;
+  padding: 12px;
   color: var(--text-primary);
   font-family: monospace;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   line-height: 1.5;
   resize: vertical;
   outline: none;
 }
 
 .modal-footer {
-  padding: 16px 24px;
+  padding: 14px 20px;
   border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 10px;
 }
 
 .btn-secondary {
@@ -682,7 +650,7 @@ body {
   border-radius: var(--radius-md);
   cursor: pointer;
   font-weight: 500;
-  min-height: 38px;
+  min-height: 40px;
 }
 
 .btn-submit {
@@ -693,13 +661,40 @@ body {
   border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
-  min-height: 38px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* File Import Label Button for 100% Mobile Reliability */
+.file-upload-btn-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--accent-gradient);
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--accent-glow);
+  min-height: 44px;
+  transition: var(--transition-fast);
+  text-align: center;
+}
+
+.file-upload-btn-label:active {
+  transform: scale(0.98);
 }
 
 /* Empty Placeholder */
 .empty-state {
   text-align: center;
-  padding: 36px 20px;
+  padding: 32px 16px;
   color: var(--text-muted);
   background: var(--bg-card);
   border: 1px dashed var(--border-color);
@@ -709,26 +704,30 @@ body {
 /* Toast Notification */
 .toast-container {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 20px;
+  right: 20px;
+  left: 20px;
   z-index: 2000;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
 }
 
 .toast {
   background: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--accent-primary);
-  padding: 12px 18px;
+  padding: 10px 16px;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   font-size: 0.875rem;
+  pointer-events: auto;
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .form-group label {
@@ -748,6 +747,7 @@ body {
   color: var(--text-primary);
   font-size: 0.95rem;
   outline: none;
+  min-height: 42px;
 }
   </style>
 </head>
@@ -780,7 +780,6 @@ body {
         <button class="btn-icon" id="theme-toggle-btn" title="切換主題">
           🌓
         </button>
-        <input type="file" id="import-file-input" accept=".csv, .json, .txt" style="display: none;">
       </div>
     </header>
 
@@ -812,6 +811,42 @@ body {
     <main id="timeline-stream" class="timeline-stream">
       <!-- Rendered dynamically -->
     </main>
+  </div>
+
+  <!-- Excel / CSV / JSON Import Modal with Native Label Trigger for 100% Mobile Reliability -->
+  <div class="modal-overlay" id="import-data-modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📊 匯入歷史工作紀錄 (Excel / CSV / JSON)</h3>
+        <button class="btn-action-icon close-modal-btn">✖</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px;">
+          您可以將匯出的 <strong>WorkLog_History.json</strong> 或 Excel/CSV 紀錄直接選擇匯入，系統會自動對應欄位並載入 LocalStorage 時間軸：
+        </p>
+
+        <div style="background: var(--bg-primary); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.85rem; font-family: monospace; margin-bottom: 16px;">
+          <strong>支援檔名與格式：</strong><br>
+          • <strong>JSON 備份檔</strong> (如 <code>WorkLog_History.json</code>)<br>
+          • <strong>Excel / CSV 檔</strong> (欄位: 日期/date, 工作事項/title, 狀態, 類別/標籤)
+        </div>
+
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+          <!-- Direct File Label for Mobile Native Touch Triggering -->
+          <label for="import-file-input" class="file-upload-btn-label">
+            📂 選擇 JSON / CSV 檔案匯入
+          </label>
+          <input type="file" id="import-file-input" accept=".json, .csv, .txt, application/json" style="display: none;">
+
+          <button class="btn-secondary" id="btn-download-csv-template">
+            📥 下載 Excel CSV 範本
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary close-modal-btn">關閉</button>
+      </div>
+    </div>
   </div>
 
   <!-- Clear/Cleanup Modal with Date Options -->
@@ -864,41 +899,6 @@ body {
       <div class="modal-footer">
         <button class="btn-secondary close-modal-btn">取消</button>
         <button class="btn-submit" id="btn-execute-cleanup" style="background: #ef4444;">確認刪除清理</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Excel / CSV / JSON Import Modal -->
-  <div class="modal-overlay" id="import-data-modal" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>📊 匯入歷史工作紀錄 (Excel / CSV / JSON)</h3>
-        <button class="btn-action-icon close-modal-btn">✖</button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px;">
-          您可以將 Excel/CSV/JSON 中舊的工作紀錄匯入，系統會自動比對欄位並依日期倒序排列於時間軸中：
-        </p>
-
-        <div style="background: var(--bg-primary); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.85rem; font-family: monospace; margin-bottom: 16px;">
-          <strong>支援解析欄位名稱 (Header Mapping)：</strong><br>
-          • <strong>日期欄位</strong>：<code>日期</code>、<code>date</code>、<code>target_date</code> (格式: YYYY-MM-DD 或 YYYY/MM/DD)<br>
-          • <strong>工作事項</strong>：<code>工作事項</code>、<code>內容</code>、<code>task</code>、<code>title</code><br>
-          • <strong>類別/標籤</strong>：<code>類別/標籤</code>、<code>類別</code>、<code>標籤</code>、<code>tags</code><br>
-          • <strong>狀態欄位</strong>：<code>狀態</code>、<code>status</code> (「已完成/請假/休假」會轉為完成標籤)
-        </div>
-
-        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-          <button class="btn-secondary" id="btn-download-csv-template">
-            📥 下載 Excel CSV 範本
-          </button>
-          <button class="btn-submit" id="btn-trigger-file-select">
-            📂 選擇 Excel CSV / JSON 檔案匯入
-          </button>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary close-modal-btn">關閉</button>
       </div>
     </div>
   </div>
@@ -965,7 +965,970 @@ body {
   <!-- Toast Notifications -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Unified Application Bundle Script (Inline & External Fallback) -->
-  <script src="js/bundle.js"></script>
+  <!-- Unified Application Complete Script -->
+  <script>
+(function() {
+  'use strict';
+
+  /* ==========================================================================
+     1. UTILITY FUNCTIONS
+     ========================================================================== */
+  function formatDateISO(date) {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  function getTodayString() {
+    return formatDateISO(new Date());
+  }
+
+  function getTomorrowString() {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return formatDateISO(d);
+  }
+
+  function getYesterdayString() {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return formatDateISO(d);
+  }
+
+  function formatDateDisplay(dateStr) {
+    if (!dateStr) return '';
+    const today = getTodayString();
+    const tomorrow = getTomorrowString();
+    const yesterday = getYesterdayString();
+    
+    const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    
+    const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    const dayName = daysOfWeek[d.getDay()];
+
+    if (dateStr === today) return `今天 (${dayName})`;
+    if (dateStr === tomorrow) return `明天 (${dayName})`;
+    if (dateStr === yesterday) return `昨天 (${dayName})`;
+    
+    return `${dateStr} (${dayName})`;
+  }
+
+  function extractTags(text) {
+    if (!text) return [];
+    const matches = text.match(/#([\w\u4e00-\u9fa5_-]+)/g);
+    if (!matches) return [];
+    return Array.from(new Set(matches.map(m => m.substring(1))));
+  }
+
+  function normalizeDateString(rawDateStr) {
+    if (!rawDateStr) return null;
+    let cleaned = String(rawDateStr).trim().replace(/\//g, '-').replace(/"/g, '');
+    
+    const parts = cleaned.split('-');
+    if (parts.length === 3) {
+      const yyyy = parts[0].trim();
+      const mm = parts[1].trim().padStart(2, '0');
+      const dd = parts[2].trim().padStart(2, '0');
+      if (/^\d{4}$/.test(yyyy) && /^\d{2}$/.test(mm) && /^\d{2}$/.test(dd)) {
+        return `${yyyy}-${mm}-${dd}`;
+      }
+    }
+    return null;
+  }
+
+  function parseCSVTasks(csvText) {
+    const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== '');
+    if (lines.length === 0) return [];
+
+    const headerRow = parseCSVRow(lines[0]);
+    let dateColIdx = -1;
+    let titleColIdx = -1;
+    let statusColIdx = -1;
+    let tagsColIdx = -1;
+
+    headerRow.forEach((colName, idx) => {
+      const col = colName.trim().toLowerCase();
+      if (col.includes('日期') || col.includes('date') || col.includes('target_date')) {
+        dateColIdx = idx;
+      } else if (col.includes('工作事項') || col.includes('內容') || col.includes('task') || col.includes('title') || col.includes('name')) {
+        titleColIdx = idx;
+      } else if (col.includes('狀態') || col.includes('status')) {
+        statusColIdx = idx;
+      } else if (col.includes('類別') || col.includes('標籤') || col.includes('tags') || col.includes('category')) {
+        tagsColIdx = idx;
+      }
+    });
+
+    const hasHeader = dateColIdx !== -1 || titleColIdx !== -1 || statusColIdx !== -1 || tagsColIdx !== -1;
+    const startIndex = hasHeader ? 1 : 0;
+
+    if (dateColIdx === -1) dateColIdx = 0;
+    if (titleColIdx === -1) titleColIdx = 1;
+    if (statusColIdx === -1) statusColIdx = 2;
+    if (tagsColIdx === -1) tagsColIdx = 3;
+
+    const tasks = [];
+
+    for (let i = startIndex; i < lines.length; i++) {
+      const row = parseCSVRow(lines[i]);
+      if (row.length === 0) continue;
+
+      const rawDate = row[dateColIdx];
+      const parsedDate = normalizeDateString(rawDate) || getTodayString();
+
+      let title = row[titleColIdx] ? row[titleColIdx].trim() : '';
+      if (!title && row[0] && dateColIdx !== 0) {
+        title = row[0].trim();
+      }
+      if (!title) continue;
+
+      const statusStr = row[statusColIdx] ? row[statusColIdx].trim() : '已完成';
+      let status = 'completed';
+      if (statusStr.includes('未') || statusStr.toLowerCase() === 'pending') {
+        status = 'pending';
+      } else if (statusStr.includes('進') || statusStr.toLowerCase() === 'in_progress') {
+        status = 'in_progress';
+      } else if (
+        statusStr.includes('完成') || 
+        statusStr.includes('請假') || 
+        statusStr.includes('休假') || 
+        statusStr.toLowerCase() === 'done' || 
+        statusStr.toLowerCase() === 'completed'
+      ) {
+        status = 'completed';
+      }
+
+      const tagsStr = row[tagsColIdx] ? row[tagsColIdx].trim() : '';
+      const tagsFromTitle = extractTags(title);
+      const extraTags = tagsStr.split(/[,;\s]+/).map(t => t.replace(/^#/, '').trim()).filter(Boolean);
+      const combinedTags = Array.from(new Set([...tagsFromTitle, ...extraTags]));
+
+      tasks.push({
+        id: 'task_import_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        title: title,
+        targetDate: parsedDate,
+        status: status,
+        tags: combinedTags,
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    return tasks;
+  }
+
+  function parseCSVRow(text) {
+    const arr = [];
+    let quote = false;
+    let col = '';
+    for (let c = 0; c < text.length; c++) {
+      const cc = text[c];
+      const nc = text[c+1];
+      if (cc === '"') {
+        if (quote && nc === '"') { col += '"'; c++; }
+        else { quote = !quote; }
+      } else if (cc === ',' && !quote) {
+        arr.push(col);
+        col = '';
+      } else {
+        col += cc;
+      }
+    }
+    arr.push(col);
+    return arr;
+  }
+
+  function generateWeeklyReportMarkdown(completedTasks, startDate, endDate) {
+    let markdown = `# 📋 工作週報 (${startDate} ~ ${endDate})\n\n`;
+    
+    if (completedTasks.length === 0) {
+      markdown += `*此區間內無已完成的工作事項。*\n`;
+      return markdown;
+    }
+    
+    markdown += `### 💡 本週工作重點摘要\n`;
+    markdown += `- 本週共計完成 **${completedTasks.length}** 項任務與專案交付。\n\n`;
+    
+    const tagMap = {};
+    const untagged = [];
+    
+    completedTasks.forEach(task => {
+      if (task.tags && task.tags.length > 0) {
+        task.tags.forEach(t => {
+          if (!tagMap[t]) tagMap[t] = [];
+          tagMap[t].push(task);
+        });
+      } else {
+        untagged.push(task);
+      }
+    });
+    
+    markdown += `### 🎯 已完成項目明細 (按專案/標籤)\n\n`;
+    
+    Object.keys(tagMap).forEach(tag => {
+      markdown += `#### 📌 #${tag}\n`;
+      tagMap[tag].forEach(t => {
+        markdown += `- [x] ${t.title} _(${t.targetDate})_\n`;
+      });
+      markdown += `\n`;
+    });
+    
+    if (untagged.length > 0) {
+      markdown += `#### 📌 一般事項\n`;
+      untagged.forEach(t => {
+        markdown += `- [x] ${t.title} _(${t.targetDate})_\n`;
+      });
+      markdown += `\n`;
+    }
+
+    markdown += `---\n*報告產生時間：${new Date().toLocaleString('zh-TW')}*\n`;
+    return markdown;
+  }
+
+  /* ==========================================================================
+     2. TASK STORE
+     ========================================================================== */
+  const STORAGE_KEY = 'daily_work_log_tasks_v2';
+
+  class TaskStore {
+    constructor() {
+      this.tasks = [];
+      this.loadFromStorage();
+    }
+
+    loadFromStorage() {
+      try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        if (data !== null) {
+          this.tasks = JSON.parse(data);
+        } else {
+          this.tasks = [];
+          this.saveToStorage();
+        }
+      } catch (e) {
+        console.error('Failed to load tasks from localStorage', e);
+        this.tasks = [];
+      }
+    }
+
+    saveToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.tasks));
+      } catch (e) {
+        console.error('Failed to save tasks to localStorage', e);
+      }
+    }
+
+    getAllTasks() {
+      return [...this.tasks];
+    }
+
+    addTask({ title, targetDate, tags = [] }) {
+      const today = getTodayString();
+      const newTask = {
+        id: 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        title: title.trim(),
+        targetDate: targetDate || today,
+        status: 'pending',
+        tags: tags,
+        createdAt: new Date().toISOString()
+      };
+
+      this.tasks.unshift(newTask);
+      this.saveToStorage();
+      return newTask;
+    }
+
+    bulkAddTasks(newTasks) {
+      this.tasks = [...newTasks, ...this.tasks];
+      this.saveToStorage();
+    }
+
+    clearAllTasks() {
+      const count = this.tasks.length;
+      this.tasks = [];
+      this.saveToStorage();
+      return count;
+    }
+
+    deleteTasksBySingleDate(targetDate) {
+      const initialCount = this.tasks.length;
+      this.tasks = this.tasks.filter(t => t.targetDate !== targetDate);
+      const deletedCount = initialCount - this.tasks.length;
+      this.saveToStorage();
+      return deletedCount;
+    }
+
+    deleteTasksByDateRange(startDate, endDate) {
+      const initialCount = this.tasks.length;
+      this.tasks = this.tasks.filter(t => !(t.targetDate >= startDate && t.targetDate <= endDate));
+      const deletedCount = initialCount - this.tasks.length;
+      this.saveToStorage();
+      return deletedCount;
+    }
+
+    deleteTasksBeforeDate(beforeDate) {
+      const initialCount = this.tasks.length;
+      this.tasks = this.tasks.filter(t => t.targetDate >= beforeDate);
+      const deletedCount = initialCount - this.tasks.length;
+      this.saveToStorage();
+      return deletedCount;
+    }
+
+    updateTask(id, updates) {
+      const index = this.tasks.findIndex(t => t.id === id);
+      if (index !== -1) {
+        const current = this.tasks[index];
+        const updatedTask = { ...current, ...updates };
+
+        if (updates.status === 'completed' && current.status !== 'completed') {
+          updatedTask.completedAt = new Date().toISOString();
+        } else if (updates.status !== 'completed') {
+          delete updatedTask.completedAt;
+        }
+
+        this.tasks[index] = updatedTask;
+        this.saveToStorage();
+        return updatedTask;
+      }
+      return null;
+    }
+
+    cycleTaskStatus(id) {
+      const task = this.tasks.find(t => t.id === id);
+      if (!task) return null;
+
+      let nextStatus = 'pending';
+      if (task.status === 'pending') nextStatus = 'in_progress';
+      else if (task.status === 'in_progress') nextStatus = 'completed';
+      else if (task.status === 'completed') nextStatus = 'pending';
+
+      return this.updateTask(id, { status: nextStatus });
+    }
+
+    deleteTask(id) {
+      this.tasks = this.tasks.filter(t => t.id !== id);
+      this.saveToStorage();
+    }
+
+    exportJSON() {
+      return JSON.stringify(this.tasks, null, 2);
+    }
+
+    importJSON(jsonString) {
+      try {
+        const parsed = JSON.parse(jsonString);
+        let itemsToImport = [];
+
+        if (Array.isArray(parsed)) {
+          itemsToImport = parsed;
+        } else if (typeof parsed === 'object' && parsed !== null) {
+          // If JSON is wrapped in an object e.g. { tasks: [...] }
+          itemsToImport = parsed.tasks || parsed.data || [parsed];
+        }
+
+        if (Array.isArray(itemsToImport) && itemsToImport.length > 0) {
+          const mapped = itemsToImport.map((item, idx) => {
+            const rawDate = item.targetDate || item.target_date || item.date || item.日期;
+            const targetDate = normalizeDateString(rawDate) || getTodayString();
+
+            const title = String(item.title || item.task || item.工作事項 || item.內容 || item.name || '').trim();
+
+            const rawStatus = String(item.status || item.狀態 || 'completed').trim();
+            let status = 'completed';
+            if (rawStatus.includes('未') || rawStatus.toLowerCase() === 'pending') {
+              status = 'pending';
+            } else if (rawStatus.includes('進') || rawStatus.toLowerCase() === 'in_progress') {
+              status = 'in_progress';
+            } else if (
+              rawStatus.includes('完成') || 
+              rawStatus.includes('請假') || 
+              rawStatus.includes('休假') || 
+              rawStatus.toLowerCase() === 'done' || 
+              rawStatus.toLowerCase() === 'completed'
+            ) {
+              status = 'completed';
+            }
+
+            const rawTags = item.tags || item['類別/標籤'] || item.類別 || item.標籤 || [];
+            let tagsArray = [];
+            if (Array.isArray(rawTags)) {
+              tagsArray = rawTags.map(t => String(t).replace(/^#/, '').trim());
+            } else if (typeof rawTags === 'string') {
+              tagsArray = rawTags.split(/[,;\s]+/).map(t => t.replace(/^#/, '').trim());
+            }
+            const titleTags = extractTags(title);
+            const combinedTags = Array.from(new Set([...titleTags, ...tagsArray])).filter(Boolean);
+
+            return {
+              id: item.id || `task_json_${Date.now()}_${idx}_${Math.random().toString(36).substr(2, 4)}`,
+              title: title || '未命名事項',
+              targetDate: targetDate,
+              status: status,
+              tags: combinedTags,
+              createdAt: item.createdAt || new Date().toISOString()
+            };
+          });
+
+          this.bulkAddTasks(mapped);
+          return true;
+        }
+      } catch (e) {
+        console.error('Invalid JSON import format', e);
+      }
+      return false;
+    }
+  }
+
+  /* ==========================================================================
+     3. STREAMLINED TIMELINE APP CONTROLLER
+     ========================================================================== */
+  class DailyWorkLogApp {
+    constructor() {
+      this.store = new TaskStore();
+      this.searchQuery = '';
+      this.editingTaskId = null;
+      this.upcomingCollapsed = false;
+
+      this.initTheme();
+      this.bindEvents();
+      this.render();
+    }
+
+    initTheme() {
+      const savedTheme = localStorage.getItem('app_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+
+    toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('app_theme', next);
+    }
+
+    bindEvents() {
+      document.getElementById('theme-toggle-btn')?.addEventListener('click', () => this.toggleTheme());
+      document.getElementById('btn-export-data')?.addEventListener('click', () => this.handleExportData());
+      
+      document.getElementById('btn-open-clear-modal')?.addEventListener('click', () => {
+        this.openClearModal();
+      });
+
+      document.querySelectorAll('input[name="clean-mode"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          const mode = e.target.value;
+          document.getElementById('clean-single-box').style.display = mode === 'single' ? 'block' : 'none';
+          document.getElementById('clean-range-box').style.display = mode === 'range' ? 'block' : 'none';
+          document.getElementById('clean-before-box').style.display = mode === 'before' ? 'block' : 'none';
+        });
+      });
+
+      document.getElementById('btn-execute-cleanup')?.addEventListener('click', () => {
+        this.handleExecuteCleanup();
+      });
+
+      document.getElementById('btn-import-data')?.addEventListener('click', () => {
+        this.openImportModal();
+      });
+
+      document.getElementById('btn-download-csv-template')?.addEventListener('click', () => {
+        this.downloadCSVTemplate();
+      });
+
+      // Direct file input change listener for robust mobile support
+      document.getElementById('import-file-input')?.addEventListener('change', (e) => this.handleImportFile(e));
+
+      const datePicker = document.getElementById('quick-task-date');
+      if (datePicker) datePicker.value = getTodayString();
+
+      document.getElementById('btn-add-task')?.addEventListener('click', () => this.handleAddTask());
+      document.getElementById('quick-task-title')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.handleAddTask();
+        }
+      });
+
+      document.getElementById('search-input')?.addEventListener('input', (e) => {
+        this.searchQuery = e.target.value.trim().toLowerCase();
+        this.renderTimelineStream();
+      });
+
+      document.getElementById('btn-open-report')?.addEventListener('click', () => this.openWeeklyReportModal());
+      document.getElementById('btn-copy-report')?.addEventListener('click', () => {
+        const textarea = document.getElementById('report-text-area');
+        if (textarea) {
+          textarea.select();
+          navigator.clipboard.writeText(textarea.value);
+          this.showToast('本週週報內容已成功複製到剪貼簿！');
+        }
+      });
+
+      document.querySelectorAll('.close-modal-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const modal = e.currentTarget.closest('.modal-overlay');
+          if (modal) modal.style.display = 'none';
+        });
+      });
+
+      document.getElementById('btn-save-edit')?.addEventListener('click', () => this.handleSaveTaskEdit());
+    }
+
+    handleAddTask() {
+      const inputEl = document.getElementById('quick-task-title');
+      const titleText = inputEl ? inputEl.value.trim() : '';
+
+      if (!titleText) {
+        this.showToast('請輸入事項名稱');
+        return;
+      }
+
+      const datePicker = document.getElementById('quick-task-date');
+      const targetDate = datePicker?.value || getTodayString();
+      const tags = extractTags(titleText);
+
+      this.store.addTask({
+        title: titleText,
+        targetDate: targetDate,
+        tags: tags
+      });
+
+      if (inputEl) inputEl.value = '';
+      this.showToast('新增事項成功！');
+      this.render();
+    }
+
+    render() {
+      this.renderTimelineStream();
+    }
+
+    renderTimelineStream() {
+      const container = document.getElementById('timeline-stream');
+      if (!container) return;
+
+      let allTasks = this.store.getAllTasks();
+
+      if (this.searchQuery) {
+        allTasks = allTasks.filter(t => 
+          t.title.toLowerCase().includes(this.searchQuery) ||
+          t.tags.some(tag => tag.toLowerCase().includes(this.searchQuery))
+        );
+      }
+
+      const today = getTodayString();
+      const yesterday = getYesterdayString();
+
+      const upcomingTasks = allTasks.filter(t => t.targetDate > today && t.status !== 'completed');
+      const todayTasks = allTasks.filter(t => t.targetDate === today);
+      const yesterdayTasks = allTasks.filter(t => t.targetDate === yesterday);
+      
+      const earlierTasksMap = {};
+      allTasks.filter(t => t.targetDate < yesterday).forEach(t => {
+        if (!earlierTasksMap[t.targetDate]) earlierTasksMap[t.targetDate] = [];
+        earlierTasksMap[t.targetDate].push(t);
+      });
+      const sortedEarlierDates = Object.keys(earlierTasksMap).sort((a, b) => b.localeCompare(a));
+
+      if (allTasks.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div style="font-size: 36px; margin-bottom: 8px;">✨</div>
+            <h4>目前尚無任何工作紀錄</h4>
+            <p>在上方輸入框填寫事項按 Enter，或點擊右上角「📊 匯入」載入 Excel/CSV/JSON 紀錄。</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+
+      // 1. 📌 Upcoming Section
+      if (upcomingTasks.length > 0 && !this.searchQuery) {
+        html += `
+          <div class="timeline-group">
+            <div class="timeline-header">
+              <div class="timeline-date-node">
+                <div class="node-bullet upcoming">📌</div>
+                <div class="node-title">
+                  <span>未來待辦 (Upcoming)</span>
+                  <span class="count-tag">${upcomingTasks.length}</span>
+                </div>
+              </div>
+              <button class="btn-toggle-group" id="toggle-upcoming-btn">
+                ${this.upcomingCollapsed ? '展開 ▶' : '摺疊 ▼'}
+              </button>
+            </div>
+            <div class="timeline-card-list" id="upcoming-card-list" style="display: ${this.upcomingCollapsed ? 'none' : 'flex'};">
+              ${upcomingTasks.map(t => this.renderTaskCardHTML(t)).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // 2. 📅 Today Section
+      html += `
+        <div class="timeline-group">
+          <div class="timeline-header">
+            <div class="timeline-date-node">
+              <div class="node-bullet today">📅</div>
+              <div class="node-title">
+                <span>${formatDateDisplay(today)}</span>
+                <span class="count-tag">${todayTasks.length} 項</span>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-card-list">
+            ${todayTasks.length > 0
+              ? todayTasks.map(t => this.renderTaskCardHTML(t)).join('')
+              : `<div class="empty-state" style="padding: 16px;">今日尚無記錄事項</div>`
+            }
+          </div>
+        </div>
+      `;
+
+      // 3. 📜 Yesterday Section
+      if (yesterdayTasks.length > 0) {
+        html += `
+          <div class="timeline-group">
+            <div class="timeline-header">
+              <div class="timeline-date-node">
+                <div class="node-bullet past">📜</div>
+                <div class="node-title">
+                  <span>${formatDateDisplay(yesterday)}</span>
+                  <span class="count-tag">${yesterdayTasks.length} 項</span>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-card-list">
+              ${yesterdayTasks.map(t => this.renderTaskCardHTML(t)).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // 4. 📜 Earlier Days Section
+      sortedEarlierDates.forEach(dateStr => {
+        const tasks = earlierTasksMap[dateStr];
+        html += `
+          <div class="timeline-group">
+            <div class="timeline-header">
+              <div class="timeline-date-node">
+                <div class="node-bullet past">📜</div>
+                <div class="node-title">
+                  <span>${formatDateDisplay(dateStr)}</span>
+                  <span class="count-tag">${tasks.length} 項</span>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-card-list">
+              ${tasks.map(t => this.renderTaskCardHTML(t)).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      this.bindTimelineEvents();
+    }
+
+    renderTaskCardHTML(task) {
+      const isComp = task.status === 'completed';
+      const isProg = task.status === 'in_progress';
+      const statusLabelMap = { pending: '未開始', in_progress: '進行中', completed: '已完成' };
+
+      return `
+        <div class="task-card ${task.status}" data-task-id="${task.id}">
+          <div class="task-left">
+            <button class="status-checkbox" data-action="toggle-status" title="切換狀態 (未開始 ➔ 進行中 ➔ 已完成)">
+              ${isComp ? '✓' : (isProg ? '•' : '')}
+            </button>
+            
+            <div class="task-content-block">
+              <div class="task-title">${this.escapeHTML(task.title)}</div>
+              <div class="task-meta">
+                <span class="badge status-${task.status}">${statusLabelMap[task.status]}</span>
+                ${task.tags && task.tags.length > 0 
+                  ? task.tags.map(tag => `<span class="tag-badge">#${this.escapeHTML(tag)}</span>`).join('') 
+                  : ''
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="task-actions">
+            <button class="btn-action-icon" data-action="edit" title="編輯">✏️</button>
+            <button class="btn-action-icon danger" data-action="delete" title="刪除">🗑️</button>
+          </div>
+        </div>
+      `;
+    }
+
+    bindTimelineEvents() {
+      document.getElementById('toggle-upcoming-btn')?.addEventListener('click', () => {
+        this.upcomingCollapsed = !this.upcomingCollapsed;
+        this.renderTimelineStream();
+      });
+
+      document.querySelectorAll('[data-action="toggle-status"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const card = e.currentTarget.closest('.task-card');
+          const id = card?.getAttribute('data-task-id');
+          if (id) {
+            this.store.cycleTaskStatus(id);
+            this.renderTimelineStream();
+          }
+        });
+      });
+
+      document.querySelectorAll('[data-action="edit"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const card = e.currentTarget.closest('.task-card');
+          const id = card?.getAttribute('data-task-id');
+          if (id) this.openEditModal(id);
+        });
+      });
+
+      document.querySelectorAll('[data-action="delete"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const card = e.currentTarget.closest('.task-card');
+          const id = card?.getAttribute('data-task-id');
+          if (id && confirm('確定要刪除這筆紀錄嗎？')) {
+            this.store.deleteTask(id);
+            this.showToast('紀錄已刪除');
+            this.renderTimelineStream();
+          }
+        });
+      });
+    }
+
+    openClearModal() {
+      const today = getTodayString();
+      const singleDateInput = document.getElementById('clean-single-date');
+      if (singleDateInput) singleDateInput.value = today;
+
+      const startDateInput = document.getElementById('clean-start-date');
+      const endDateInput = document.getElementById('clean-end-date');
+      if (startDateInput) startDateInput.value = today;
+      if (endDateInput) endDateInput.value = today;
+
+      const beforeDateInput = document.getElementById('clean-before-date');
+      if (beforeDateInput) beforeDateInput.value = today;
+
+      const modal = document.getElementById('clear-data-modal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    handleExecuteCleanup() {
+      const mode = document.querySelector('input[name="clean-mode"]:checked')?.value || 'single';
+      let deletedCount = 0;
+
+      if (mode === 'single') {
+        const dateVal = document.getElementById('clean-single-date')?.value;
+        if (!dateVal) { alert('請選擇要清理的日期'); return; }
+        if (confirm(`確定要刪除 ${dateVal} 當天的所有紀錄嗎？`)) {
+          deletedCount = this.store.deleteTasksBySingleDate(dateVal);
+          this.showToast(`已成功刪除 ${dateVal} 的 ${deletedCount} 項紀錄！`);
+        } else return;
+      } else if (mode === 'range') {
+        const startDate = document.getElementById('clean-start-date')?.value;
+        const endDate = document.getElementById('clean-end-date')?.value;
+        if (!startDate || !endDate) { alert('請選擇完整的開始與結束日期'); return; }
+        if (confirm(`確定要刪除區間 ${startDate} 至 ${endDate} 的所有紀錄嗎？`)) {
+          deletedCount = this.store.deleteTasksByDateRange(startDate, endDate);
+          this.showToast(`已成功刪除區間內 ${deletedCount} 項紀錄！`);
+        } else return;
+      } else if (mode === 'before') {
+        const beforeDate = document.getElementById('clean-before-date')?.value;
+        if (!beforeDate) { alert('請選擇日期'); return; }
+        if (confirm(`確定要刪除早於 ${beforeDate} 之前的所有歷史紀錄嗎？`)) {
+          deletedCount = this.store.deleteTasksBeforeDate(beforeDate);
+          this.showToast(`已成功刪除 ${beforeDate} 之前的 ${deletedCount} 項歷史紀錄！`);
+        } else return;
+      } else if (mode === 'all') {
+        if (confirm('確定要清空全站所有工作紀錄嗎？此動作無法復原。')) {
+          deletedCount = this.store.clearAllTasks();
+          this.showToast(`已清空全站 ${deletedCount} 項工作紀錄！`);
+        } else return;
+      }
+
+      document.getElementById('clear-data-modal').style.display = 'none';
+      this.renderTimelineStream();
+    }
+
+    openEditModal(id) {
+      const task = this.store.getAllTasks().find(t => t.id === id);
+      if (!task) return;
+
+      this.editingTaskId = id;
+      document.getElementById('edit-title').value = task.title;
+      document.getElementById('edit-target-date').value = task.targetDate;
+      document.getElementById('edit-status').value = task.status;
+      document.getElementById('edit-tags').value = task.tags ? task.tags.map(t => `#${t}`).join(' ') : '';
+
+      const modal = document.getElementById('edit-task-modal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    handleSaveTaskEdit() {
+      if (!this.editingTaskId) return;
+
+      const title = document.getElementById('edit-title').value.trim();
+      const targetDate = document.getElementById('edit-target-date').value;
+      const status = document.getElementById('edit-status').value;
+      const tagsText = document.getElementById('edit-tags').value;
+
+      if (!title) {
+        alert('請輸入事項名稱');
+        return;
+      }
+
+      const titleTags = extractTags(title);
+      const extraTags = extractTags(tagsText);
+      const tags = Array.from(new Set([...titleTags, ...extraTags]));
+
+      this.store.updateTask(this.editingTaskId, {
+        title,
+        targetDate,
+        status,
+        tags
+      });
+
+      document.getElementById('edit-task-modal').style.display = 'none';
+      this.showToast('紀錄更新成功！');
+      this.renderTimelineStream();
+    }
+
+    openWeeklyReportModal() {
+      const today = getTodayString();
+      const d = new Date();
+      d.setDate(d.getDate() - 7);
+      const startDate = formatDateISO(d);
+
+      const allTasks = this.store.getAllTasks();
+      const completedTasks = allTasks.filter(t => 
+        t.status === 'completed' && 
+        t.targetDate >= startDate && 
+        t.targetDate <= today
+      );
+
+      const markdownText = generateWeeklyReportMarkdown(completedTasks, startDate, today);
+      const textarea = document.getElementById('report-text-area');
+      if (textarea) textarea.value = markdownText;
+
+      const modal = document.getElementById('weekly-report-modal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    openImportModal() {
+      const modal = document.getElementById('import-data-modal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    downloadCSVTemplate() {
+      const csvContent = "\uFEFF日期,工作事項,狀態,類別/標籤\n" +
+        "2026-07-20,完成資料庫 Schema 設計與 Index 索引優化,已完成,資料庫;專案A\n" +
+        "2026-07-21,與跨部門團隊進行 API 規格驗證,已完成,會議;專案B\n" +
+        "2026-07-22,整理客戶反饋需求與 Bug 清單,已完成,專案B\n";
+      
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `工作日誌匯入範本_template.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      this.showToast('範本 CSV 已下載！可直接於 Excel 開啟與編輯');
+    }
+
+    handleExportData() {
+      const jsonStr = this.store.exportJSON();
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `WorkLog_History.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      this.showToast('備份資料已成功導出 WorkLog_History.json 檔！');
+    }
+
+    handleImportFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const self = this;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const content = e.target.result;
+          const fileName = file.name.toLowerCase();
+          const trimmed = content.trim();
+
+          // 1. Try parsing JSON first (if starts with [ or { or ends with .json)
+          if (fileName.endsWith('.json') || trimmed.startsWith('[') || trimmed.startsWith('{')) {
+            const success = self.store.importJSON(content);
+            if (success) {
+              self.showToast('成功匯入 JSON 工作紀錄！');
+              document.getElementById('import-data-modal').style.display = 'none';
+              self.renderTimelineStream();
+              return;
+            }
+          }
+
+          // 2. Try parsing CSV
+          const parsedTasks = parseCSVTasks(content);
+          if (parsedTasks.length > 0) {
+            self.store.bulkAddTasks(parsedTasks);
+            self.showToast(`成功匯入 ${parsedTasks.length} 筆工作紀錄！`);
+            document.getElementById('import-data-modal').style.display = 'none';
+            self.renderTimelineStream();
+          } else {
+            alert('未能解析檔案內容，請確認為格式正確的 JSON 或 CSV 檔');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('解析檔案失敗，請確認檔案格式正確');
+        }
+      };
+
+      reader.readAsText(file, 'UTF-8');
+      event.target.value = '';
+    }
+
+    showToast(message) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>✨ ${this.escapeHTML(message)}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    escapeHTML(str) {
+      if (!str) return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    window.app = new DailyWorkLogApp();
+  });
+})();
+  </script>
 </body>
 </html>
