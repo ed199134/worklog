@@ -21,11 +21,10 @@
     }
   </script>
 
-  <!-- Complete RWD Work Log CSS Stylesheet -->
+  <!-- Complete RWD Work Log CSS Stylesheet with Two-Tier Accordion -->
   <style>
 /* ==========================================================================
-   Daily Work Log - Work Log Streamlined Layout Stylesheet
-   Design Concept: Pure Work Log Entries Without Checkboxes or Dimmed Status
+   Daily Work Log - Two-Tier Foldable Accordion Stylesheet
    ========================================================================== */
 
 :root {
@@ -339,17 +338,6 @@ body {
   gap: 24px;
 }
 
-.timeline-stream::before {
-  content: '';
-  position: absolute;
-  left: 17px;
-  top: 10px;
-  bottom: 10px;
-  width: 2px;
-  background: var(--border-color);
-  z-index: 0;
-}
-
 .timeline-group {
   position: relative;
   z-index: 1;
@@ -423,16 +411,110 @@ body {
   gap: 10px;
 }
 
-/* Pure Work Log Item Card (No Checkbox, Full Contrast Text) */
-.task-card {
+/* ==========================================================================
+   Two-Tier Accordion Component Styles
+   ========================================================================== */
+
+/* Tier 1: Year Group */
+.year-accordion-group {
+  margin-top: 10px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.year-accordion-header {
+  background: rgba(30, 41, 59, 0.95);
   padding: 14px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: var(--transition-fast);
+}
+
+.year-accordion-header:hover {
+  background: var(--bg-tertiary);
+}
+
+.year-accordion-group.is-open .year-accordion-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.year-accordion-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.accordion-arrow {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  transition: transform var(--transition-fast);
+}
+
+/* Tier 2: Month Group */
+.month-accordion-group {
+  margin: 12px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.month-accordion-header {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  background: rgba(51, 65, 85, 0.4);
+  transition: var(--transition-fast);
+}
+
+.month-accordion-header:hover {
+  background: var(--bg-tertiary);
+}
+
+.month-accordion-group.is-open .month-accordion-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.month-accordion-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.month-accordion-content {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Task Item Card inside Month Accordion */
+.task-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
   transition: transform var(--transition-fast), border-color var(--transition-fast);
 }
 
@@ -459,8 +541,6 @@ body {
   color: var(--text-primary);
   word-break: break-word;
   line-height: 1.5;
-  text-decoration: none !important; /* Ensure no line-through */
-  opacity: 1 !important;
 }
 
 .task-meta {
@@ -481,35 +561,83 @@ body {
 }
 
 .task-actions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  position: relative;
   flex-shrink: 0;
 }
 
-.btn-action-icon {
+.btn-more-options {
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: 1.25rem;
+  font-weight: bold;
   transition: var(--transition-fast);
 }
 
-.btn-action-icon:hover {
+.btn-more-options:hover,
+.btn-more-options.active {
   background: var(--bg-tertiary);
   color: var(--text-primary);
 }
 
-.btn-action-icon.danger:hover {
-  background: rgba(239, 68, 68, 0.15);
+.task-context-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  min-width: 150px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: menuFadeIn 0.15s ease-out;
+}
+
+@keyframes menuFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task-context-menu .menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+
+.task-context-menu .menu-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.task-context-menu .menu-item.danger {
   color: #ef4444;
+}
+
+.task-context-menu .menu-item.danger:hover {
+  background: rgba(239, 68, 68, 0.15);
 }
 
 /* Modals */
@@ -745,7 +873,7 @@ body {
 
     <!-- Reverse-chronological Vertical Timeline Stream -->
     <main id="timeline-stream" class="timeline-stream">
-      <!-- Rendered dynamically -->
+      <!-- Rendered dynamically with Two-Tier Accordion -->
     </main>
   </div>
 
@@ -891,7 +1019,7 @@ body {
   <!-- Toast Notifications -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Unified Pure Work Log Script -->
+  <!-- Unified Script with Two-Tier Accordion -->
   <script>
 (function() {
   'use strict';
@@ -1250,7 +1378,7 @@ body {
   }
 
   /* ==========================================================================
-     3. STREAMLINED TIMELINE APP CONTROLLER
+     3. STREAMLINED TIMELINE APP CONTROLLER WITH TWO-TIER ACCORDION
      ========================================================================== */
   class DailyWorkLogApp {
     constructor() {
@@ -1258,6 +1386,11 @@ body {
       this.searchQuery = '';
       this.editingTaskId = null;
       this.upcomingCollapsed = false;
+
+      // Accordion state sets
+      this.expandedYears = new Set();
+      this.expandedMonths = new Set();
+      this.accordionInitialized = false;
 
       this.initTheme();
       this.bindEvents();
@@ -1341,6 +1474,21 @@ body {
       });
 
       document.getElementById('btn-save-edit')?.addEventListener('click', () => this.handleSaveTaskEdit());
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.task-actions')) {
+          this.closeAllContextMenus();
+        }
+      });
+    }
+
+    closeAllContextMenus() {
+      document.querySelectorAll('.task-context-menu').forEach(menu => {
+        menu.style.display = 'none';
+      });
+      document.querySelectorAll('.btn-more-options').forEach(btn => {
+        btn.classList.remove('active');
+      });
     }
 
     handleAddTask() {
@@ -1385,18 +1533,45 @@ body {
       }
 
       const today = getTodayString();
-      const yesterday = getYesterdayString();
 
       const upcomingTasks = allTasks.filter(t => t.targetDate > today);
       const todayTasks = allTasks.filter(t => t.targetDate === today);
-      const yesterdayTasks = allTasks.filter(t => t.targetDate === yesterday);
-      
-      const earlierTasksMap = {};
-      allTasks.filter(t => t.targetDate < yesterday).forEach(t => {
-        if (!earlierTasksMap[t.targetDate]) earlierTasksMap[t.targetDate] = [];
-        earlierTasksMap[t.targetDate].push(t);
+      const historyTasks = allTasks.filter(t => t.targetDate < today);
+
+      // Build Two-Tier History Tree: { Year: { Month: { Date: [tasks] } } }
+      const historyTree = {};
+      let totalHistoryCount = 0;
+
+      historyTasks.forEach(task => {
+        const parts = task.targetDate.split('-');
+        if (parts.length !== 3) return;
+        const year = parts[0];
+        const monthKey = `${parts[0]}-${parts[1]}`;
+        const dateKey = task.targetDate;
+
+        if (!historyTree[year]) historyTree[year] = { count: 0, months: {} };
+        if (!historyTree[year].months[monthKey]) historyTree[year].months[monthKey] = { count: 0, dates: {} };
+        if (!historyTree[year].months[monthKey].dates[dateKey]) historyTree[year].months[monthKey].dates[dateKey] = [];
+
+        historyTree[year].count++;
+        historyTree[year].months[monthKey].count++;
+        historyTree[year].months[monthKey].dates[dateKey].push(task);
+        totalHistoryCount++;
       });
-      const sortedEarlierDates = Object.keys(earlierTasksMap).sort((a, b) => b.localeCompare(a));
+
+      const sortedYears = Object.keys(historyTree).sort((a, b) => b.localeCompare(a));
+
+      // Auto-expand latest year and latest month on initial render
+      if (!this.accordionInitialized && sortedYears.length > 0) {
+        const latestYear = sortedYears[0];
+        this.expandedYears.add(latestYear);
+
+        const sortedMonths = Object.keys(historyTree[latestYear].months).sort((a, b) => b.localeCompare(a));
+        if (sortedMonths.length > 0) {
+          this.expandedMonths.add(sortedMonths[0]);
+        }
+        this.accordionInitialized = true;
+      }
 
       if (allTasks.length === 0) {
         container.innerHTML = `
@@ -1455,52 +1630,82 @@ body {
         </div>
       `;
 
-      // 3. 📜 Yesterday Section
-      if (yesterdayTasks.length > 0) {
-        html += `
-          <div class="timeline-group">
-            <div class="timeline-header">
-              <div class="timeline-date-node">
-                <div class="node-bullet past">📜</div>
-                <div class="node-title">
-                  <span>${formatDateDisplay(yesterday)}</span>
-                  <span class="count-tag">${yesterdayTasks.length} 項</span>
-                </div>
-              </div>
-            </div>
-            <div class="timeline-card-list">
-              ${yesterdayTasks.map(t => this.renderTaskCardHTML(t)).join('')}
-            </div>
-          </div>
-        `;
-      }
+      // 3. 📂 Two-Tier Foldable History Accordion Stream
+      if (sortedYears.length > 0) {
+        sortedYears.forEach(year => {
+          const yearData = historyTree[year];
+          const isYearExpanded = this.searchQuery || this.expandedYears.has(year);
 
-      // 4. 📜 Earlier Days Section
-      sortedEarlierDates.forEach(dateStr => {
-        const tasks = earlierTasksMap[dateStr];
-        html += `
-          <div class="timeline-group">
-            <div class="timeline-header">
-              <div class="timeline-date-node">
-                <div class="node-bullet past">📜</div>
-                <div class="node-title">
-                  <span>${formatDateDisplay(dateStr)}</span>
-                  <span class="count-tag">${tasks.length} 項</span>
+          html += `
+            <div class="year-accordion-group ${isYearExpanded ? 'is-open' : ''}">
+              <div class="year-accordion-header" data-toggle-year="${year}">
+                <div class="year-accordion-title">
+                  <span>📂 ${year} 年</span>
+                  <span class="count-tag">${yearData.count} 項</span>
+                </div>
+                <span class="accordion-arrow">${isYearExpanded ? '🔽' : '❯'}</span>
+              </div>
+
+              <div class="year-accordion-content" style="display: ${isYearExpanded ? 'block' : 'none'};">
+          `;
+
+          const sortedMonths = Object.keys(yearData.months).sort((a, b) => b.localeCompare(a));
+          sortedMonths.forEach(monthKey => {
+            const monthData = yearData.months[monthKey];
+            const isMonthExpanded = this.searchQuery || this.expandedMonths.has(monthKey);
+            const monthNumber = monthKey.split('-')[1];
+
+            html += `
+              <div class="month-accordion-group ${isMonthExpanded ? 'is-open' : ''}">
+                <div class="month-accordion-header" data-toggle-month="${monthKey}">
+                  <div class="month-accordion-title">
+                    <span>📁 ${monthNumber} 月</span>
+                    <span class="count-tag">${monthData.count} 項</span>
+                  </div>
+                  <span class="accordion-arrow">${isMonthExpanded ? '🔽' : '❯'}</span>
+                </div>
+
+                <div class="month-accordion-content" style="display: ${isMonthExpanded ? 'flex' : 'none'};">
+            `;
+
+            const sortedDates = Object.keys(monthData.dates).sort((a, b) => b.localeCompare(a));
+            sortedDates.forEach(dateStr => {
+              const tasksOnDate = monthData.dates[dateStr];
+              html += `
+                <div class="timeline-group">
+                  <div class="timeline-header">
+                    <div class="timeline-date-node">
+                      <div class="node-bullet past">📜</div>
+                      <div class="node-title">
+                        <span>${formatDateDisplay(dateStr)}</span>
+                        <span class="count-tag">${tasksOnDate.length} 項</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="timeline-card-list">
+                    ${tasksOnDate.map(t => this.renderTaskCardHTML(t)).join('')}
+                  </div>
+                </div>
+              `;
+            });
+
+            html += `
                 </div>
               </div>
+            `;
+          });
+
+          html += `
+              </div>
             </div>
-            <div class="timeline-card-list">
-              ${tasks.map(t => this.renderTaskCardHTML(t)).join('')}
-            </div>
-          </div>
-        `;
-      });
+          `;
+        });
+      }
 
       container.innerHTML = html;
       this.bindTimelineEvents();
     }
 
-    // Pure Work Log Card Renderer (No Checkbox, Left Aligned, Clean Text Color)
     renderTaskCardHTML(task) {
       return `
         <div class="task-card" data-task-id="${task.id}">
@@ -1516,34 +1721,94 @@ body {
           </div>
 
           <div class="task-actions">
-            <button class="btn-action-icon" data-action="edit" title="編輯">✏️</button>
-            <button class="btn-action-icon danger" data-action="delete" title="刪除">🗑️</button>
+            <button class="btn-more-options" data-action="toggle-menu" title="更多選項">⋮</button>
+            <div class="task-context-menu" style="display: none;">
+              <button class="menu-item" data-action="edit">
+                <span>✏️ 編輯此事項</span>
+              </button>
+              <button class="menu-item danger" data-action="delete">
+                <span>🗑️ 刪除此事項</span>
+              </button>
+            </div>
           </div>
         </div>
       `;
     }
 
     bindTimelineEvents() {
+      // Toggle Upcoming
       document.getElementById('toggle-upcoming-btn')?.addEventListener('click', () => {
         this.upcomingCollapsed = !this.upcomingCollapsed;
         this.renderTimelineStream();
       });
 
-      document.querySelectorAll('[data-action="edit"]').forEach(btn => {
+      // Toggle Year Accordion
+      document.querySelectorAll('[data-toggle-year]').forEach(header => {
+        header.addEventListener('click', (e) => {
+          const year = e.currentTarget.getAttribute('data-toggle-year');
+          if (this.expandedYears.has(year)) {
+            this.expandedYears.delete(year);
+          } else {
+            this.expandedYears.add(year);
+          }
+          this.renderTimelineStream();
+        });
+      });
+
+      // Toggle Month Accordion
+      document.querySelectorAll('[data-toggle-month]').forEach(header => {
+        header.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const month = e.currentTarget.getAttribute('data-toggle-month');
+          if (this.expandedMonths.has(month)) {
+            this.expandedMonths.delete(month);
+          } else {
+            this.expandedMonths.add(month);
+          }
+          this.renderTimelineStream();
+        });
+      });
+
+      // Toggle Context Menu Trigger
+      document.querySelectorAll('[data-action="toggle-menu"]').forEach(btn => {
         btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const actionsContainer = e.currentTarget.closest('.task-actions');
+          const menu = actionsContainer?.querySelector('.task-context-menu');
+          const isCurrentlyOpen = menu && menu.style.display === 'flex';
+
+          this.closeAllContextMenus();
+
+          if (menu && !isCurrentlyOpen) {
+            menu.style.display = 'flex';
+            btn.classList.add('active');
+          }
+        });
+      });
+
+      // Edit Action inside Pop-up Menu
+      document.querySelectorAll('.task-context-menu [data-action="edit"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.closeAllContextMenus();
           const card = e.currentTarget.closest('.task-card');
           const id = card?.getAttribute('data-task-id');
           if (id) this.openEditModal(id);
         });
       });
 
-      document.querySelectorAll('[data-action="delete"]').forEach(btn => {
+      // Delete Action with Double Confirmation Protection
+      document.querySelectorAll('.task-context-menu [data-action="delete"]').forEach(btn => {
         btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.closeAllContextMenus();
           const card = e.currentTarget.closest('.task-card');
           const id = card?.getAttribute('data-task-id');
-          if (id && confirm('確定要刪除這筆紀錄嗎？')) {
+          const task = this.store.getAllTasks().find(t => t.id === id);
+
+          if (id && confirm(`⚠️ 二次確認：\n您確定要刪除「${task ? task.title : '這筆事項'}」工作紀錄嗎？`)) {
             this.store.deleteTask(id);
-            this.showToast('紀錄已刪除');
+            this.showToast('紀錄已成功刪除');
             this.renderTimelineStream();
           }
         });
@@ -1574,7 +1839,7 @@ body {
       if (mode === 'single') {
         const dateVal = document.getElementById('clean-single-date')?.value;
         if (!dateVal) { alert('請選擇要清理的日期'); return; }
-        if (confirm(`確定要刪除 ${dateVal} 當天的所有紀錄嗎？`)) {
+        if (confirm(`⚠️ 二次確認：\n確定要刪除 ${dateVal} 當天的所有紀錄嗎？`)) {
           deletedCount = this.store.deleteTasksBySingleDate(dateVal);
           this.showToast(`已成功刪除 ${dateVal} 的 ${deletedCount} 項紀錄！`);
         } else return;
@@ -1582,19 +1847,19 @@ body {
         const startDate = document.getElementById('clean-start-date')?.value;
         const endDate = document.getElementById('clean-end-date')?.value;
         if (!startDate || !endDate) { alert('請選擇完整的開始與結束日期'); return; }
-        if (confirm(`確定要刪除區間 ${startDate} 至 ${endDate} 的所有紀錄嗎？`)) {
+        if (confirm(`⚠️ 二次確認：\n確定要刪除區間 ${startDate} 至 ${endDate} 的所有紀錄嗎？`)) {
           deletedCount = this.store.deleteTasksByDateRange(startDate, endDate);
           this.showToast(`已成功刪除區間內 ${deletedCount} 項紀錄！`);
         } else return;
       } else if (mode === 'before') {
         const beforeDate = document.getElementById('clean-before-date')?.value;
         if (!beforeDate) { alert('請選擇日期'); return; }
-        if (confirm(`確定要刪除早於 ${beforeDate} 之前的所有歷史紀錄嗎？`)) {
+        if (confirm(`⚠️ 二次確認：\n確定要刪除早於 ${beforeDate} 之前的所有歷史紀錄嗎？`)) {
           deletedCount = this.store.deleteTasksBeforeDate(beforeDate);
           this.showToast(`已成功刪除 ${beforeDate} 之前的 ${deletedCount} 項歷史紀錄！`);
         } else return;
       } else if (mode === 'all') {
-        if (confirm('確定要清空全站所有工作紀錄嗎？此動作無法復原。')) {
+        if (confirm('⚠️ 高風險警告二次確認：\n確定要清空全站所有工作紀錄嗎？此動作無法復原。')) {
           deletedCount = this.store.clearAllTasks();
           this.showToast(`已清空全站 ${deletedCount} 項工作紀錄！`);
         } else return;
