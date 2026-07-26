@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>個人工作日誌 - 極簡單頁式時間軸 (WorkLog Stream)</title>
+  <!-- Google Fonts - Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- PWA Manifest & Theme Color -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg failed', err));
+      });
+    }
+  </script>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Streamlined Header -->
+    <header class="app-header">
+      <div class="brand-title">
+        <div class="brand-icon">📝</div>
+        <div class="brand-text">
+          <h1>WorkLog Stream</h1>
+          <p>極簡單頁式工作日誌與時間軸</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-report-quick" id="btn-open-report" title="一鍵生成本週週報">
+          📋 複製本週週報
+        </button>
+        <button class="btn-icon" id="btn-import-data" title="匯入 Excel / CSV / JSON 紀錄">
+          📊 匯入
+        </button>
+        <button class="btn-icon" id="btn-export-data" title="匯出備份 JSON">
+          📤 備份
+        </button>
+        <button class="btn-icon" id="btn-open-clear-modal" title="按日期或區間清空紀錄" style="color: #ef4444;">
+          🗑️ 清理
+        </button>
+        <button class="btn-icon" id="theme-toggle-btn" title="切換主題">
+          🌓
+        </button>
+        <input type="file" id="import-file-input" accept=".csv, .json, .txt" style="display: none;">
+      </div>
+    </header>
+
+    <!-- Global Search Bar -->
+    <div class="search-bar-row">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="搜尋全站歷史紀錄或 #標籤...">
+      </div>
+    </div>
+
+    <!-- Quick Input Area -->
+    <section class="quick-input-card">
+      <div class="input-main-row">
+        <input type="text" id="quick-task-title" placeholder="新增紀錄或未來待辦 (支援輸入 #標籤，按 Enter 快速送出)..." autofocus>
+        
+        <div class="date-selector-wrap">
+          <span>日期：</span>
+          <input type="date" id="quick-task-date">
+        </div>
+
+        <button class="btn-add" id="btn-add-task">
+          新增
+        </button>
+      </div>
+    </section>
+
+    <!-- Reverse-chronological Vertical Timeline Stream -->
+    <main id="timeline-stream" class="timeline-stream">
+      <!-- Rendered dynamically by bundle.js -->
+    </main>
+  </div>
+
+  <!-- Clear/Cleanup Modal with Date Options -->
+  <div class="modal-overlay" id="clear-data-modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>🗑️ 清理與刪除紀錄</h3>
+        <button class="btn-action-icon close-modal-btn">✖</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">
+          請選擇您希望進行的紀錄清理方式：
+        </p>
+
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95rem;">
+            <input type="radio" name="clean-mode" value="single" checked>
+            <span>刪除指定單一日期的所有紀錄</span>
+          </label>
+          <div id="clean-single-box" style="margin-left: 24px;">
+            <input type="date" id="clean-single-date" class="date-input" style="padding: 6px 12px; width: 100%;">
+          </div>
+
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95rem; margin-top: 8px;">
+            <input type="radio" name="clean-mode" value="range">
+            <span>刪除指定日期區間內的紀錄</span>
+          </label>
+          <div id="clean-range-box" style="margin-left: 24px; display: none;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="date" id="clean-start-date" class="date-input" style="padding: 6px 10px; flex: 1;">
+              <span>至</span>
+              <input type="date" id="clean-end-date" class="date-input" style="padding: 6px 10px; flex: 1;">
+            </div>
+          </div>
+
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95rem; margin-top: 8px;">
+            <input type="radio" name="clean-mode" value="before">
+            <span>刪除早於特定日期的所有舊紀錄</span>
+          </label>
+          <div id="clean-before-box" style="margin-left: 24px; display: none;">
+            <input type="date" id="clean-before-date" class="date-input" style="padding: 6px 12px; width: 100%;">
+          </div>
+
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95rem; color: #ef4444; margin-top: 8px;">
+            <input type="radio" name="clean-mode" value="all">
+            <span>清空全站所有紀錄 (全部刪除)</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary close-modal-btn">取消</button>
+        <button class="btn-submit" id="btn-execute-cleanup" style="background: #ef4444;">確認刪除清理</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Excel / CSV / JSON Import Modal -->
+  <div class="modal-overlay" id="import-data-modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📊 匯入歷史工作紀錄 (Excel / CSV / JSON)</h3>
+        <button class="btn-action-icon close-modal-btn">✖</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px;">
+          您可以將 Excel/CSV/JSON 中舊的工作紀錄匯入，系統會自動比對欄位並依日期倒序排列於時間軸中：
+        </p>
+
+        <div style="background: var(--bg-primary); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.85rem; font-family: monospace; margin-bottom: 16px;">
+          <strong>支援解析欄位名稱 (Header Mapping)：</strong><br>
+          • <strong>日期欄位</strong>：<code>日期</code>、<code>date</code>、<code>target_date</code> (格式: YYYY-MM-DD 或 YYYY/MM/DD)<br>
+          • <strong>工作事項</strong>：<code>工作事項</code>、<code>內容</code>、<code>task</code>、<code>title</code><br>
+          • <strong>類別/標籤</strong>：<code>類別/標籤</code>、<code>類別</code>、<code>標籤</code>、<code>tags</code><br>
+          • <strong>狀態欄位</strong>：<code>狀態</code>、<code>status</code> (「已完成/請假/休假」會轉為完成標籤)
+        </div>
+
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button class="btn-secondary" id="btn-download-csv-template">
+            📥 下載 Excel CSV 範本
+          </button>
+          <button class="btn-submit" id="btn-trigger-file-select">
+            📂 選擇 Excel CSV / JSON 檔案匯入
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary close-modal-btn">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Task Modal -->
+  <div class="modal-overlay" id="edit-task-modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>✏️ 編輯工作紀錄</h3>
+        <button class="btn-action-icon close-modal-btn">✖</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="edit-title">事項名稱</label>
+          <input type="text" id="edit-title">
+        </div>
+
+        <div class="form-group">
+          <label for="edit-target-date">預定日期</label>
+          <input type="date" id="edit-target-date">
+        </div>
+
+        <div class="form-group">
+          <label for="edit-status">執行狀態</label>
+          <select id="edit-status">
+            <option value="pending">未開始 (Pending)</option>
+            <option value="in_progress">進行中 (In Progress)</option>
+            <option value="completed">已完成 (Completed)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-tags">標籤 (以 #標籤 輸入)</label>
+          <input type="text" id="edit-tags" placeholder="#專案A #會議">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary close-modal-btn">取消</button>
+        <button class="btn-submit" id="btn-save-edit">儲存變更</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Report Modal -->
+  <div class="modal-overlay" id="weekly-report-modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📋 本週完成事項 Markdown 週報</h3>
+        <button class="btn-action-icon close-modal-btn">✖</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 12px;">
+          系統已自動彙整本週已完成的事項，您可以直接複製並貼上至週報文件中。
+        </p>
+        <textarea id="report-text-area" class="report-textarea" readonly></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary close-modal-btn">關閉</button>
+        <button class="btn-submit" id="btn-copy-report">📋 複製到剪貼簿</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Unified Application Bundle Script -->
+  <script src="js/bundle.js"></script>
+</body>
+</html>
