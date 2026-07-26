@@ -21,10 +21,11 @@
     }
   </script>
 
-  <!-- Complete RWD CSS Stylesheet -->
+  <!-- Complete RWD Work Log CSS Stylesheet -->
   <style>
 /* ==========================================================================
-   Daily Work Log & Task Manager - Unified RWD Stylesheet
+   Daily Work Log - Work Log Streamlined Layout Stylesheet
+   Design Concept: Pure Work Log Entries Without Checkboxes or Dimmed Status
    ========================================================================== */
 
 :root {
@@ -44,13 +45,6 @@
   --accent-primary: #6366f1;
   --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
   --accent-glow: rgba(99, 102, 241, 0.25);
-
-  --status-pending-bg: rgba(245, 158, 11, 0.12);
-  --status-pending-text: #fbbf24;
-  --status-progress-bg: rgba(59, 130, 246, 0.15);
-  --status-progress-text: #60a5fa;
-  --status-completed-bg: rgba(16, 185, 129, 0.15);
-  --status-completed-text: #34d399;
 
   --tag-bg: rgba(99, 102, 241, 0.15);
   --tag-text: #818cf8;
@@ -83,13 +77,6 @@
 
   --accent-primary: #4f46e5;
   --accent-glow: rgba(79, 70, 229, 0.15);
-
-  --status-pending-bg: #fef3c7;
-  --status-pending-text: #d97706;
-  --status-progress-bg: #dbeafe;
-  --status-progress-text: #2563eb;
-  --status-completed-bg: #d1fae5;
-  --status-completed-text: #059669;
 
   --tag-bg: #e0e7ff;
   --tag-text: #4338ca;
@@ -252,7 +239,7 @@ body {
   color: var(--text-muted);
 }
 
-/* Quick Input Box RWD */
+/* Quick Input Box */
 .quick-input-card {
   background: var(--bg-card);
   backdrop-filter: blur(12px);
@@ -436,16 +423,16 @@ body {
   gap: 10px;
 }
 
-/* Task Item Card - Modern Flexible Layout */
+/* Pure Work Log Item Card (No Checkbox, Full Contrast Text) */
 .task-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 12px 16px;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
   transition: transform var(--transition-fast), border-color var(--transition-fast);
 }
 
@@ -454,53 +441,11 @@ body {
   transform: translateY(-1px);
 }
 
-.task-card.completed {
-  opacity: 0.72;
-}
-
-.task-card.completed .task-title {
-  text-decoration: line-through;
-  color: var(--text-muted);
-}
-
 .task-left {
   display: flex;
   align-items: center;
-  gap: 12px;
   flex: 1;
   min-width: 0;
-}
-
-.status-checkbox {
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  border: 2px solid var(--text-muted);
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 0.9rem;
-  font-weight: bold;
-  transition: var(--transition-fast);
-  flex-shrink: 0;
-}
-
-.status-checkbox:hover {
-  border-color: var(--accent-primary);
-}
-
-.task-card.completed .status-checkbox {
-  background: var(--status-completed-text);
-  border-color: var(--status-completed-text);
-}
-
-.task-card.in_progress .status-checkbox {
-  border-color: var(--status-progress-text);
-  background: rgba(59, 130, 246, 0.25);
-  color: var(--status-progress-text);
 }
 
 .task-content-block {
@@ -509,9 +454,13 @@ body {
 }
 
 .task-title {
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   font-weight: 500;
+  color: var(--text-primary);
   word-break: break-word;
+  line-height: 1.5;
+  text-decoration: none !important; /* Ensure no line-through */
+  opacity: 1 !important;
 }
 
 .task-meta {
@@ -522,25 +471,13 @@ body {
   flex-wrap: wrap;
 }
 
-.badge {
-  font-size: 0.7rem;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-}
-
-.badge.status-pending { background: var(--status-pending-bg); color: var(--status-pending-text); }
-.badge.status-in_progress { background: var(--status-progress-bg); color: var(--status-progress-text); }
-.badge.status-completed { background: var(--status-completed-bg); color: var(--status-completed-text); }
-
 .tag-badge {
   background: var(--tag-bg);
   color: var(--tag-text);
-  font-size: 0.7rem;
-  padding: 2px 7px;
+  font-size: 0.725rem;
+  padding: 2px 8px;
   border-radius: 10px;
+  font-weight: 500;
 }
 
 .task-actions {
@@ -668,7 +605,6 @@ body {
   gap: 6px;
 }
 
-/* File Import Label Button for 100% Mobile Reliability */
 .file-upload-btn-label {
   display: inline-flex;
   align-items: center;
@@ -813,7 +749,7 @@ body {
     </main>
   </div>
 
-  <!-- Excel / CSV / JSON Import Modal with Native Label Trigger for 100% Mobile Reliability -->
+  <!-- Excel / CSV / JSON Import Modal -->
   <div class="modal-overlay" id="import-data-modal" style="display: none;">
     <div class="modal-content">
       <div class="modal-header">
@@ -822,17 +758,16 @@ body {
       </div>
       <div class="modal-body">
         <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px;">
-          您可以將匯出的 <strong>WorkLog_History.json</strong> 或 Excel/CSV 紀錄直接選擇匯入，系統會自動對應欄位並載入 LocalStorage 時間軸：
+          您可以將匯出的 <strong>WorkLog_History.json</strong> 或 Excel/CSV 紀錄直接選擇匯入，系統會自動對應欄位並載入時間軸：
         </p>
 
         <div style="background: var(--bg-primary); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.85rem; font-family: monospace; margin-bottom: 16px;">
           <strong>支援檔名與格式：</strong><br>
           • <strong>JSON 備份檔</strong> (如 <code>WorkLog_History.json</code>)<br>
-          • <strong>Excel / CSV 檔</strong> (欄位: 日期/date, 工作事項/title, 狀態, 類別/標籤)
+          • <strong>Excel / CSV 檔</strong> (欄位: 日期/date, 工作事項/title, 類別/標籤)
         </div>
 
         <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-          <!-- Direct File Label for Mobile Native Touch Triggering -->
           <label for="import-file-input" class="file-upload-btn-label">
             📂 選擇 JSON / CSV 檔案匯入
           </label>
@@ -922,15 +857,6 @@ body {
         </div>
 
         <div class="form-group">
-          <label for="edit-status">執行狀態</label>
-          <select id="edit-status">
-            <option value="pending">未開始 (Pending)</option>
-            <option value="in_progress">進行中 (In Progress)</option>
-            <option value="completed">已完成 (Completed)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
           <label for="edit-tags">標籤 (以 #標籤 輸入)</label>
           <input type="text" id="edit-tags" placeholder="#專案A #會議">
         </div>
@@ -951,7 +877,7 @@ body {
       </div>
       <div class="modal-body">
         <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 12px;">
-          系統已自動彙整本週已完成的事項，您可以直接複製並貼上至週報文件中。
+          系統已自動彙整本週已產出的工作事項，您可以直接複製並貼上至週報文件中。
         </p>
         <textarea id="report-text-area" class="report-textarea" readonly></textarea>
       </div>
@@ -965,7 +891,7 @@ body {
   <!-- Toast Notifications -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Unified Application Complete Script -->
+  <!-- Unified Pure Work Log Script -->
   <script>
 (function() {
   'use strict';
@@ -1046,7 +972,6 @@ body {
     const headerRow = parseCSVRow(lines[0]);
     let dateColIdx = -1;
     let titleColIdx = -1;
-    let statusColIdx = -1;
     let tagsColIdx = -1;
 
     headerRow.forEach((colName, idx) => {
@@ -1055,20 +980,17 @@ body {
         dateColIdx = idx;
       } else if (col.includes('工作事項') || col.includes('內容') || col.includes('task') || col.includes('title') || col.includes('name')) {
         titleColIdx = idx;
-      } else if (col.includes('狀態') || col.includes('status')) {
-        statusColIdx = idx;
       } else if (col.includes('類別') || col.includes('標籤') || col.includes('tags') || col.includes('category')) {
         tagsColIdx = idx;
       }
     });
 
-    const hasHeader = dateColIdx !== -1 || titleColIdx !== -1 || statusColIdx !== -1 || tagsColIdx !== -1;
+    const hasHeader = dateColIdx !== -1 || titleColIdx !== -1 || tagsColIdx !== -1;
     const startIndex = hasHeader ? 1 : 0;
 
     if (dateColIdx === -1) dateColIdx = 0;
     if (titleColIdx === -1) titleColIdx = 1;
-    if (statusColIdx === -1) statusColIdx = 2;
-    if (tagsColIdx === -1) tagsColIdx = 3;
+    if (tagsColIdx === -1) tagsColIdx = 2;
 
     const tasks = [];
 
@@ -1085,22 +1007,6 @@ body {
       }
       if (!title) continue;
 
-      const statusStr = row[statusColIdx] ? row[statusColIdx].trim() : '已完成';
-      let status = 'completed';
-      if (statusStr.includes('未') || statusStr.toLowerCase() === 'pending') {
-        status = 'pending';
-      } else if (statusStr.includes('進') || statusStr.toLowerCase() === 'in_progress') {
-        status = 'in_progress';
-      } else if (
-        statusStr.includes('完成') || 
-        statusStr.includes('請假') || 
-        statusStr.includes('休假') || 
-        statusStr.toLowerCase() === 'done' || 
-        statusStr.toLowerCase() === 'completed'
-      ) {
-        status = 'completed';
-      }
-
       const tagsStr = row[tagsColIdx] ? row[tagsColIdx].trim() : '';
       const tagsFromTitle = extractTags(title);
       const extraTags = tagsStr.split(/[,;\s]+/).map(t => t.replace(/^#/, '').trim()).filter(Boolean);
@@ -1110,7 +1016,6 @@ body {
         id: 'task_import_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
         title: title,
         targetDate: parsedDate,
-        status: status,
         tags: combinedTags,
         createdAt: new Date().toISOString()
       });
@@ -1140,21 +1045,21 @@ body {
     return arr;
   }
 
-  function generateWeeklyReportMarkdown(completedTasks, startDate, endDate) {
+  function generateWeeklyReportMarkdown(tasks, startDate, endDate) {
     let markdown = `# 📋 工作週報 (${startDate} ~ ${endDate})\n\n`;
     
-    if (completedTasks.length === 0) {
-      markdown += `*此區間內無已完成的工作事項。*\n`;
+    if (tasks.length === 0) {
+      markdown += `*此區間內無紀錄的工作事項。*\n`;
       return markdown;
     }
     
     markdown += `### 💡 本週工作重點摘要\n`;
-    markdown += `- 本週共計完成 **${completedTasks.length}** 項任務與專案交付。\n\n`;
+    markdown += `- 本週共計記錄 **${tasks.length}** 項任務與工作項目。\n\n`;
     
     const tagMap = {};
     const untagged = [];
     
-    completedTasks.forEach(task => {
+    tasks.forEach(task => {
       if (task.tags && task.tags.length > 0) {
         task.tags.forEach(t => {
           if (!tagMap[t]) tagMap[t] = [];
@@ -1165,12 +1070,12 @@ body {
       }
     });
     
-    markdown += `### 🎯 已完成項目明細 (按專案/標籤)\n\n`;
+    markdown += `### 🎯 已記錄項目明細 (按專案/標籤)\n\n`;
     
     Object.keys(tagMap).forEach(tag => {
       markdown += `#### 📌 #${tag}\n`;
       tagMap[tag].forEach(t => {
-        markdown += `- [x] ${t.title} _(${t.targetDate})_\n`;
+        markdown += `- ${t.title} _(${t.targetDate})_\n`;
       });
       markdown += `\n`;
     });
@@ -1178,7 +1083,7 @@ body {
     if (untagged.length > 0) {
       markdown += `#### 📌 一般事項\n`;
       untagged.forEach(t => {
-        markdown += `- [x] ${t.title} _(${t.targetDate})_\n`;
+        markdown += `- ${t.title} _(${t.targetDate})_\n`;
       });
       markdown += `\n`;
     }
@@ -1231,7 +1136,6 @@ body {
         id: 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
         title: title.trim(),
         targetDate: targetDate || today,
-        status: 'pending',
         tags: tags,
         createdAt: new Date().toISOString()
       };
@@ -1282,30 +1186,11 @@ body {
       if (index !== -1) {
         const current = this.tasks[index];
         const updatedTask = { ...current, ...updates };
-
-        if (updates.status === 'completed' && current.status !== 'completed') {
-          updatedTask.completedAt = new Date().toISOString();
-        } else if (updates.status !== 'completed') {
-          delete updatedTask.completedAt;
-        }
-
         this.tasks[index] = updatedTask;
         this.saveToStorage();
         return updatedTask;
       }
       return null;
-    }
-
-    cycleTaskStatus(id) {
-      const task = this.tasks.find(t => t.id === id);
-      if (!task) return null;
-
-      let nextStatus = 'pending';
-      if (task.status === 'pending') nextStatus = 'in_progress';
-      else if (task.status === 'in_progress') nextStatus = 'completed';
-      else if (task.status === 'completed') nextStatus = 'pending';
-
-      return this.updateTask(id, { status: nextStatus });
     }
 
     deleteTask(id) {
@@ -1325,7 +1210,6 @@ body {
         if (Array.isArray(parsed)) {
           itemsToImport = parsed;
         } else if (typeof parsed === 'object' && parsed !== null) {
-          // If JSON is wrapped in an object e.g. { tasks: [...] }
           itemsToImport = parsed.tasks || parsed.data || [parsed];
         }
 
@@ -1335,22 +1219,6 @@ body {
             const targetDate = normalizeDateString(rawDate) || getTodayString();
 
             const title = String(item.title || item.task || item.工作事項 || item.內容 || item.name || '').trim();
-
-            const rawStatus = String(item.status || item.狀態 || 'completed').trim();
-            let status = 'completed';
-            if (rawStatus.includes('未') || rawStatus.toLowerCase() === 'pending') {
-              status = 'pending';
-            } else if (rawStatus.includes('進') || rawStatus.toLowerCase() === 'in_progress') {
-              status = 'in_progress';
-            } else if (
-              rawStatus.includes('完成') || 
-              rawStatus.includes('請假') || 
-              rawStatus.includes('休假') || 
-              rawStatus.toLowerCase() === 'done' || 
-              rawStatus.toLowerCase() === 'completed'
-            ) {
-              status = 'completed';
-            }
 
             const rawTags = item.tags || item['類別/標籤'] || item.類別 || item.標籤 || [];
             let tagsArray = [];
@@ -1366,7 +1234,6 @@ body {
               id: item.id || `task_json_${Date.now()}_${idx}_${Math.random().toString(36).substr(2, 4)}`,
               title: title || '未命名事項',
               targetDate: targetDate,
-              status: status,
               tags: combinedTags,
               createdAt: item.createdAt || new Date().toISOString()
             };
@@ -1438,7 +1305,6 @@ body {
         this.downloadCSVTemplate();
       });
 
-      // Direct file input change listener for robust mobile support
       document.getElementById('import-file-input')?.addEventListener('change', (e) => this.handleImportFile(e));
 
       const datePicker = document.getElementById('quick-task-date');
@@ -1497,7 +1363,7 @@ body {
       });
 
       if (inputEl) inputEl.value = '';
-      this.showToast('新增事項成功！');
+      this.showToast('新增紀錄成功！');
       this.render();
     }
 
@@ -1521,7 +1387,7 @@ body {
       const today = getTodayString();
       const yesterday = getYesterdayString();
 
-      const upcomingTasks = allTasks.filter(t => t.targetDate > today && t.status !== 'completed');
+      const upcomingTasks = allTasks.filter(t => t.targetDate > today);
       const todayTasks = allTasks.filter(t => t.targetDate === today);
       const yesterdayTasks = allTasks.filter(t => t.targetDate === yesterday);
       
@@ -1553,7 +1419,7 @@ body {
               <div class="timeline-date-node">
                 <div class="node-bullet upcoming">📌</div>
                 <div class="node-title">
-                  <span>未來待辦 (Upcoming)</span>
+                  <span>未來預定 (Upcoming)</span>
                   <span class="count-tag">${upcomingTasks.length}</span>
                 </div>
               </div>
@@ -1634,27 +1500,18 @@ body {
       this.bindTimelineEvents();
     }
 
+    // Pure Work Log Card Renderer (No Checkbox, Left Aligned, Clean Text Color)
     renderTaskCardHTML(task) {
-      const isComp = task.status === 'completed';
-      const isProg = task.status === 'in_progress';
-      const statusLabelMap = { pending: '未開始', in_progress: '進行中', completed: '已完成' };
-
       return `
-        <div class="task-card ${task.status}" data-task-id="${task.id}">
+        <div class="task-card" data-task-id="${task.id}">
           <div class="task-left">
-            <button class="status-checkbox" data-action="toggle-status" title="切換狀態 (未開始 ➔ 進行中 ➔ 已完成)">
-              ${isComp ? '✓' : (isProg ? '•' : '')}
-            </button>
-            
             <div class="task-content-block">
               <div class="task-title">${this.escapeHTML(task.title)}</div>
-              <div class="task-meta">
-                <span class="badge status-${task.status}">${statusLabelMap[task.status]}</span>
-                ${task.tags && task.tags.length > 0 
-                  ? task.tags.map(tag => `<span class="tag-badge">#${this.escapeHTML(tag)}</span>`).join('') 
-                  : ''
-                }
-              </div>
+              ${task.tags && task.tags.length > 0 ? `
+                <div class="task-meta">
+                  ${task.tags.map(tag => `<span class="tag-badge">#${this.escapeHTML(tag)}</span>`).join('')}
+                </div>
+              ` : ''}
             </div>
           </div>
 
@@ -1670,17 +1527,6 @@ body {
       document.getElementById('toggle-upcoming-btn')?.addEventListener('click', () => {
         this.upcomingCollapsed = !this.upcomingCollapsed;
         this.renderTimelineStream();
-      });
-
-      document.querySelectorAll('[data-action="toggle-status"]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const card = e.currentTarget.closest('.task-card');
-          const id = card?.getAttribute('data-task-id');
-          if (id) {
-            this.store.cycleTaskStatus(id);
-            this.renderTimelineStream();
-          }
-        });
       });
 
       document.querySelectorAll('[data-action="edit"]').forEach(btn => {
@@ -1765,7 +1611,6 @@ body {
       this.editingTaskId = id;
       document.getElementById('edit-title').value = task.title;
       document.getElementById('edit-target-date').value = task.targetDate;
-      document.getElementById('edit-status').value = task.status;
       document.getElementById('edit-tags').value = task.tags ? task.tags.map(t => `#${t}`).join(' ') : '';
 
       const modal = document.getElementById('edit-task-modal');
@@ -1777,7 +1622,6 @@ body {
 
       const title = document.getElementById('edit-title').value.trim();
       const targetDate = document.getElementById('edit-target-date').value;
-      const status = document.getElementById('edit-status').value;
       const tagsText = document.getElementById('edit-tags').value;
 
       if (!title) {
@@ -1792,7 +1636,6 @@ body {
       this.store.updateTask(this.editingTaskId, {
         title,
         targetDate,
-        status,
         tags
       });
 
@@ -1808,13 +1651,12 @@ body {
       const startDate = formatDateISO(d);
 
       const allTasks = this.store.getAllTasks();
-      const completedTasks = allTasks.filter(t => 
-        t.status === 'completed' && 
+      const tasksInRange = allTasks.filter(t => 
         t.targetDate >= startDate && 
         t.targetDate <= today
       );
 
-      const markdownText = generateWeeklyReportMarkdown(completedTasks, startDate, today);
+      const markdownText = generateWeeklyReportMarkdown(tasksInRange, startDate, today);
       const textarea = document.getElementById('report-text-area');
       if (textarea) textarea.value = markdownText;
 
@@ -1828,10 +1670,10 @@ body {
     }
 
     downloadCSVTemplate() {
-      const csvContent = "\uFEFF日期,工作事項,狀態,類別/標籤\n" +
-        "2026-07-20,完成資料庫 Schema 設計與 Index 索引優化,已完成,資料庫;專案A\n" +
-        "2026-07-21,與跨部門團隊進行 API 規格驗證,已完成,會議;專案B\n" +
-        "2026-07-22,整理客戶反饋需求與 Bug 清單,已完成,專案B\n";
+      const csvContent = "\uFEFF日期,工作事項,類別/標籤\n" +
+        "2026-07-20,完成資料庫 Schema 設計與 Index 索引優化,資料庫;專案A\n" +
+        "2026-07-21,與跨部門團隊進行 API 規格驗證,會議;專案B\n" +
+        "2026-07-22,整理客戶反饋需求與 Bug 清單,專案B\n";
       
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -1867,7 +1709,6 @@ body {
           const fileName = file.name.toLowerCase();
           const trimmed = content.trim();
 
-          // 1. Try parsing JSON first (if starts with [ or { or ends with .json)
           if (fileName.endsWith('.json') || trimmed.startsWith('[') || trimmed.startsWith('{')) {
             const success = self.store.importJSON(content);
             if (success) {
@@ -1878,7 +1719,6 @@ body {
             }
           }
 
-          // 2. Try parsing CSV
           const parsedTasks = parseCSVTasks(content);
           if (parsedTasks.length > 0) {
             self.store.bulkAddTasks(parsedTasks);
