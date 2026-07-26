@@ -21,10 +21,10 @@
     }
   </script>
 
-  <!-- Complete Work Log Stylesheet -->
+  <!-- Work Log Stylesheet with Option A Global Portal Menu -->
   <style>
 /* ==========================================================================
-   Daily Work Log - Work Log Stylesheet
+   Daily Work Log - Work Log Stylesheet (Global Portal Menu)
    ========================================================================== */
 
 :root {
@@ -246,7 +246,6 @@ body {
 
 .timeline-group {
   position: relative;
-  z-index: 1;
 }
 
 .timeline-header {
@@ -323,7 +322,6 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  overflow: visible;
   box-shadow: var(--shadow-sm);
   transition: var(--transition-fast);
 }
@@ -367,7 +365,6 @@ body {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  overflow: visible;
 }
 
 .month-accordion-header {
@@ -498,37 +495,35 @@ body {
   color: var(--text-primary);
 }
 
-.task-context-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 6px;
+/* 方案 A: 全域 Portal/Body 彈窗浮動選單樣式 (position: fixed; z-index: 99999;) */
+.global-context-menu {
+  position: fixed;
+  z-index: 99999 !important;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  z-index: 500;
-  min-width: 150px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  min-width: 165px;
   padding: 6px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  animation: menuFadeIn 0.15s ease-out;
+  animation: menuFadeIn 0.12s ease-out;
 }
 
 @keyframes menuFadeIn {
-  from { opacity: 0; transform: translateY(-6px); }
+  from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.task-context-menu .menu-item {
+.global-context-menu .menu-item {
   display: flex;
   align-items: center;
   gap: 8px;
   background: transparent;
   border: none;
   color: var(--text-primary);
-  padding: 10px 12px;
+  padding: 10px 14px;
   border-radius: var(--radius-sm);
   font-size: 0.875rem;
   font-weight: 500;
@@ -539,15 +534,15 @@ body {
   white-space: nowrap;
 }
 
-.task-context-menu .menu-item:hover {
+.global-context-menu .menu-item:hover {
   background: var(--bg-tertiary);
 }
 
-.task-context-menu .menu-item.danger {
+.global-context-menu .menu-item.danger {
   color: #ef4444;
 }
 
-.task-context-menu .menu-item.danger:hover {
+.global-context-menu .menu-item.danger:hover {
   background: rgba(239, 68, 68, 0.15);
 }
 
@@ -825,41 +820,87 @@ body {
 }
   </style>
 
-  <!-- 2. 在 Script 頂層明確定義 deleteLogItem, editLogItem, toggleLogMenu 這三個全域函數 -->
+  <!-- 方案 A 全域 Body Portal/Floating Menu JavaScript 邏輯 -->
   <script>
     const LOG_STORAGE_KEY = 'daily_work_log_tasks_v2';
+    window.activeMenuTaskId = null;
+
+    window.toggleLogMenu = function(id, event) {
+      if (event) {
+        if (event.preventDefault) event.preventDefault();
+        if (event.stopPropagation) event.stopPropagation();
+      }
+
+      const globalMenu = document.getElementById('global-context-menu');
+      if (!globalMenu) return;
+
+      if (window.activeMenuTaskId === id && globalMenu.style.display === 'flex') {
+        window.closeGlobalMenu();
+        return;
+      }
+
+      const btn = event ? event.currentTarget : null;
+      if (!btn) return;
+
+      const rect = btn.getBoundingClientRect();
+      const menuWidth = 165;
+      
+      let left = rect.right - menuWidth;
+      if (left < 10) left = 10;
+      let top = rect.bottom + 6;
+
+      if (top + 100 > window.innerHeight) {
+        top = rect.top - 95;
+      }
+
+      window.activeMenuTaskId = id;
+
+      globalMenu.innerHTML = `
+        <button type="button" class="menu-item" onclick="editLogItem('${id}', event)">
+          <span>✏️ 編輯此事項</span>
+        </button>
+        <button type="button" class="menu-item danger" onclick="deleteLogItem('${id}', event)">
+          <span>🗑️ 刪除此事項</span>
+        </button>
+      `;
+
+      globalMenu.style.left = `${left}px`;
+      globalMenu.style.top = `${top}px`;
+      globalMenu.style.display = 'flex';
+    };
+
+    window.closeGlobalMenu = function() {
+      const globalMenu = document.getElementById('global-context-menu');
+      if (globalMenu) {
+        globalMenu.style.display = 'none';
+        globalMenu.innerHTML = '';
+      }
+      window.activeMenuTaskId = null;
+    };
 
     window.deleteLogItem = function(id, event) {
       if (event) {
         if (event.preventDefault) event.preventDefault();
-        if (event.stopPropagation) event.stopPropagation(); // 阻止事件冒泡，防止選單關閉事件吃掉刪除
+        if (event.stopPropagation) event.stopPropagation();
       }
 
-      // 關閉任何開啟中的選單
-      document.querySelectorAll('.task-context-menu').forEach(function(m) {
-        m.style.display = 'none';
-      });
+      window.closeGlobalMenu();
 
       if (!id) return;
 
       if (confirm('確定要刪除這筆工作紀錄嗎？')) {
         try {
-          // 1. 從 LocalStorage 撈出陣列
           const rawData = localStorage.getItem(LOG_STORAGE_KEY);
           if (rawData) {
             let tasks = JSON.parse(rawData);
-            // 2. 用 filter 過濾掉該 id 的項目
             tasks = tasks.filter(function(t) {
               return String(t.id) !== String(id);
             });
-            // 3. 寫回 LocalStorage
             localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(tasks));
           }
 
-          // 4. 調試與確認 alert
           alert('已成功刪除！');
 
-          // 5. 重新呼叫畫面渲染函數
           if (window.app && typeof window.app.render === 'function') {
             window.app.store.loadFromStorage();
             window.app.render();
@@ -879,37 +920,29 @@ body {
         if (event.stopPropagation) event.stopPropagation();
       }
 
-      document.querySelectorAll('.task-context-menu').forEach(function(m) {
-        m.style.display = 'none';
-      });
+      window.closeGlobalMenu();
 
       if (id && window.app && typeof window.app.openEditModal === 'function') {
         window.app.openEditModal(id);
       }
     };
 
-    window.toggleLogMenu = function(id, event) {
-      if (event) {
-        if (event.preventDefault) event.preventDefault();
-        if (event.stopPropagation) event.stopPropagation();
+    // 點擊空白或滾動頁面時自動收合全域 Portal 選單
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#global-context-menu') && !e.target.closest('.btn-more-options')) {
+        window.closeGlobalMenu();
       }
+    });
 
-      const btn = event ? event.currentTarget : null;
-      const cardActions = btn ? btn.closest('.task-actions') : null;
-      const targetMenu = cardActions ? cardActions.querySelector('.task-context-menu') : null;
-      const isAlreadyOpen = targetMenu && targetMenu.style.display === 'flex';
-
-      document.querySelectorAll('.task-context-menu').forEach(function(m) {
-        m.style.display = 'none';
-      });
-
-      if (targetMenu && !isAlreadyOpen) {
-        targetMenu.style.display = 'flex';
-      }
-    };
+    window.addEventListener('scroll', function() {
+      window.closeGlobalMenu();
+    }, true);
   </script>
 </head>
 <body>
+
+  <!-- 方案 A：掛載於 body 頂層的 100% 獨立全域 Portal 選單容器 -->
+  <div id="global-context-menu" class="global-context-menu" style="display: none;"></div>
 
   <div class="app-container">
     <!-- ① 【最上方】頁首標題 Header -->
@@ -1779,7 +1812,7 @@ body {
       this.bindTimelineEvents();
     }
 
-    // 1. Direct Window-Level Binding on onclick in HTML
+    // 方案 A 乾淨卡片 HTML：內部只有三個點按鈕，浮動選單改由 body 層級 Portal 動態計算渲染
     renderTaskCardHTML(task, showInlineDate = false) {
       return `
         <div class="task-card" data-task-id="${task.id}">
@@ -1797,14 +1830,6 @@ body {
 
           <div class="task-actions">
             <button type="button" class="btn-more-options" onclick="toggleLogMenu('${task.id}', event)" title="更多選項">⋮</button>
-            <div class="task-context-menu" style="display: none;">
-              <button type="button" class="menu-item" onclick="editLogItem('${task.id}', event)">
-                <span>✏️ 編輯此事項</span>
-              </button>
-              <button type="button" class="menu-item danger" onclick="deleteLogItem('${task.id}', event)">
-                <span>🗑️ 刪除此事項</span>
-              </button>
-            </div>
           </div>
         </div>
       `;
@@ -2063,14 +2088,6 @@ body {
         .replace(/'/g, '&#039;');
     }
   }
-
-  // Safely close context menus when clicking outside
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.task-actions')) {
-      document.querySelectorAll('.task-context-menu').forEach(m => m.style.display = 'none');
-      document.querySelectorAll('.btn-more-options').forEach(b => b.classList.remove('active'));
-    }
-  });
 
   document.addEventListener('DOMContentLoaded', () => {
     window.app = new DailyWorkLogApp();
