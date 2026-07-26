@@ -24,7 +24,7 @@
   <!-- Complete Work Log Stylesheet -->
   <style>
 /* ==========================================================================
-   Daily Work Log - Work Log Stylesheet with Fixed Event Delegation & Clean UI
+   Daily Work Log - Work Log Stylesheet
    ========================================================================== */
 
 :root {
@@ -323,7 +323,7 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow: visible;
   box-shadow: var(--shadow-sm);
   transition: var(--transition-fast);
 }
@@ -367,7 +367,7 @@ body {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .month-accordion-header {
@@ -507,7 +507,7 @@ body {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
-  z-index: 100;
+  z-index: 500;
   min-width: 150px;
   padding: 6px;
   display: flex;
@@ -824,6 +824,90 @@ body {
   min-height: 42px;
 }
   </style>
+
+  <!-- 2. 在 Script 頂層明確定義 deleteLogItem, editLogItem, toggleLogMenu 這三個全域函數 -->
+  <script>
+    const LOG_STORAGE_KEY = 'daily_work_log_tasks_v2';
+
+    window.deleteLogItem = function(id, event) {
+      if (event) {
+        if (event.preventDefault) event.preventDefault();
+        if (event.stopPropagation) event.stopPropagation(); // 阻止事件冒泡，防止選單關閉事件吃掉刪除
+      }
+
+      // 關閉任何開啟中的選單
+      document.querySelectorAll('.task-context-menu').forEach(function(m) {
+        m.style.display = 'none';
+      });
+
+      if (!id) return;
+
+      if (confirm('確定要刪除這筆工作紀錄嗎？')) {
+        try {
+          // 1. 從 LocalStorage 撈出陣列
+          const rawData = localStorage.getItem(LOG_STORAGE_KEY);
+          if (rawData) {
+            let tasks = JSON.parse(rawData);
+            // 2. 用 filter 過濾掉該 id 的項目
+            tasks = tasks.filter(function(t) {
+              return String(t.id) !== String(id);
+            });
+            // 3. 寫回 LocalStorage
+            localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(tasks));
+          }
+
+          // 4. 調試與確認 alert
+          alert('已成功刪除！');
+
+          // 5. 重新呼叫畫面渲染函數
+          if (window.app && typeof window.app.render === 'function') {
+            window.app.store.loadFromStorage();
+            window.app.render();
+          } else {
+            location.reload();
+          }
+        } catch (err) {
+          console.error('Delete execution error:', err);
+          alert('刪除失敗：' + err.message);
+        }
+      }
+    };
+
+    window.editLogItem = function(id, event) {
+      if (event) {
+        if (event.preventDefault) event.preventDefault();
+        if (event.stopPropagation) event.stopPropagation();
+      }
+
+      document.querySelectorAll('.task-context-menu').forEach(function(m) {
+        m.style.display = 'none';
+      });
+
+      if (id && window.app && typeof window.app.openEditModal === 'function') {
+        window.app.openEditModal(id);
+      }
+    };
+
+    window.toggleLogMenu = function(id, event) {
+      if (event) {
+        if (event.preventDefault) event.preventDefault();
+        if (event.stopPropagation) event.stopPropagation();
+      }
+
+      const btn = event ? event.currentTarget : null;
+      const cardActions = btn ? btn.closest('.task-actions') : null;
+      const targetMenu = cardActions ? cardActions.querySelector('.task-context-menu') : null;
+      const isAlreadyOpen = targetMenu && targetMenu.style.display === 'flex';
+
+      document.querySelectorAll('.task-context-menu').forEach(function(m) {
+        m.style.display = 'none';
+      });
+
+      if (targetMenu && !isAlreadyOpen) {
+        targetMenu.style.display = 'flex';
+      }
+    };
+  </script>
 </head>
 <body>
 
@@ -1031,7 +1115,7 @@ body {
   <!-- Toast Notifications -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Unified Script with Robust Event Delegation -->
+  <!-- App Core Logic Script -->
   <script>
 (function() {
   'use strict';
@@ -1063,7 +1147,7 @@ body {
   }
 
   function formatDateDisplay(dateStr) {
-    if (!dateStr) return '';
+    if (!dateStr || typeof dateStr !== 'string') return '';
     const today = getTodayString();
     const tomorrow = getTomorrowString();
     const yesterday = getYesterdayString();
@@ -1235,8 +1319,6 @@ body {
   /* ==========================================================================
      2. TASK STORE
      ========================================================================== */
-  const STORAGE_KEY = 'daily_work_log_tasks_v2';
-
   class TaskStore {
     constructor() {
       this.tasks = [];
@@ -1245,7 +1327,7 @@ body {
 
     loadFromStorage() {
       try {
-        const data = localStorage.getItem(STORAGE_KEY);
+        const data = localStorage.getItem(LOG_STORAGE_KEY);
         if (data !== null) {
           this.tasks = JSON.parse(data);
         } else {
@@ -1260,7 +1342,7 @@ body {
 
     saveToStorage() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.tasks));
+        localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(this.tasks));
       } catch (e) {
         console.error('Failed to save tasks to localStorage', e);
       }
@@ -1322,7 +1404,7 @@ body {
     }
 
     updateTask(id, updates) {
-      const index = this.tasks.findIndex(t => t.id === id);
+      const index = this.tasks.findIndex(t => String(t.id) === String(id));
       if (index !== -1) {
         const current = this.tasks[index];
         const updatedTask = { ...current, ...updates };
@@ -1334,7 +1416,7 @@ body {
     }
 
     deleteTask(id) {
-      this.tasks = this.tasks.filter(t => t.id !== id);
+      this.tasks = this.tasks.filter(t => String(t.id) !== String(id));
       this.saveToStorage();
     }
 
@@ -1405,7 +1487,6 @@ body {
 
       this.initTheme();
       this.bindEvents();
-      this.render();
     }
 
     initTheme() {
@@ -1485,22 +1566,6 @@ body {
       });
 
       document.getElementById('btn-save-edit')?.addEventListener('click', () => this.handleSaveTaskEdit());
-
-      // Auto close pop-up context menus when tapping outside
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('.task-actions')) {
-          this.closeAllContextMenus();
-        }
-      });
-    }
-
-    closeAllContextMenus() {
-      document.querySelectorAll('.task-context-menu').forEach(menu => {
-        menu.style.display = 'none';
-      });
-      document.querySelectorAll('.btn-more-options').forEach(btn => {
-        btn.classList.remove('active');
-      });
     }
 
     handleAddTask() {
@@ -1550,12 +1615,11 @@ body {
       const todayTasks = allTasks.filter(t => t.targetDate === today);
       const historyTasks = allTasks.filter(t => t.targetDate < today);
 
-      // Sort upcoming tasks chronologically (earliest future date first)
-      upcomingTasks.sort((a, b) => a.targetDate.localeCompare(b.targetDate));
+      upcomingTasks.sort((a, b) => String(a.targetDate || '').localeCompare(String(b.targetDate || '')));
 
-      // Build Two-Tier History Tree
       const historyTree = {};
       historyTasks.forEach(task => {
+        if (!task.targetDate || typeof task.targetDate !== 'string') return;
         const parts = task.targetDate.split('-');
         if (parts.length !== 3) return;
         const year = parts[0];
@@ -1597,7 +1661,6 @@ body {
 
       let html = '';
 
-      // ② 【第二區塊】📌 未來預定 (簡潔卡片，日期直接標註於卡片標籤上)
       if (upcomingTasks.length > 0 && !this.searchQuery) {
         html += `
           <div class="timeline-group">
@@ -1621,7 +1684,6 @@ body {
         `;
       }
 
-      // ③ 【第三區塊】📅 今天
       html += `
         <div class="timeline-group">
           <div class="timeline-header">
@@ -1642,7 +1704,6 @@ body {
         </div>
       `;
 
-      // ③ 【第三區塊】📂 歷史時間軸 (折疊式年月目錄)
       if (sortedYears.length > 0) {
         sortedYears.forEach(year => {
           const yearData = historyTree[year];
@@ -1718,6 +1779,7 @@ body {
       this.bindTimelineEvents();
     }
 
+    // 1. Direct Window-Level Binding on onclick in HTML
     renderTaskCardHTML(task, showInlineDate = false) {
       return `
         <div class="task-card" data-task-id="${task.id}">
@@ -1734,12 +1796,12 @@ body {
           </div>
 
           <div class="task-actions">
-            <button class="btn-more-options" data-action="toggle-menu" title="更多選項">⋮</button>
+            <button type="button" class="btn-more-options" onclick="toggleLogMenu('${task.id}', event)" title="更多選項">⋮</button>
             <div class="task-context-menu" style="display: none;">
-              <button class="menu-item" data-action="edit">
+              <button type="button" class="menu-item" onclick="editLogItem('${task.id}', event)">
                 <span>✏️ 編輯此事項</span>
               </button>
-              <button class="menu-item danger" data-action="delete">
+              <button type="button" class="menu-item danger" onclick="deleteLogItem('${task.id}', event)">
                 <span>🗑️ 刪除此事項</span>
               </button>
             </div>
@@ -1748,95 +1810,43 @@ body {
       `;
     }
 
-    // Robust Event Delegation for 100% Reliable Delete, Edit, and Toggle Actions
     bindTimelineEvents() {
       const container = document.getElementById('timeline-stream');
       if (!container) return;
 
-      container.onclick = (e) => {
-        // 1. Toggle Upcoming Group
-        const toggleUpcoming = e.target.closest('#toggle-upcoming-btn');
-        if (toggleUpcoming) {
+      const toggleUpcoming = document.getElementById('toggle-upcoming-btn');
+      if (toggleUpcoming) {
+        toggleUpcoming.onclick = (e) => {
+          e.stopPropagation();
           this.upcomingCollapsed = !this.upcomingCollapsed;
           this.renderTimelineStream();
-          return;
-        }
+        };
+      }
 
-        // 2. Toggle Year Accordion
-        const yearHeader = e.target.closest('[data-toggle-year]');
-        if (yearHeader) {
-          const year = yearHeader.getAttribute('data-toggle-year');
+      container.querySelectorAll('[data-toggle-year]').forEach(header => {
+        header.onclick = (e) => {
+          const year = e.currentTarget.getAttribute('data-toggle-year');
           if (this.expandedYears.has(year)) {
             this.expandedYears.delete(year);
           } else {
             this.expandedYears.add(year);
           }
           this.renderTimelineStream();
-          return;
-        }
+        };
+      });
 
-        // 3. Toggle Month Accordion
-        const monthHeader = e.target.closest('[data-toggle-month]');
-        if (monthHeader) {
+      container.querySelectorAll('[data-toggle-month]').forEach(header => {
+        header.onclick = (e) => {
           e.stopPropagation();
-          const month = monthHeader.getAttribute('data-toggle-month');
+          const month = e.currentTarget.getAttribute('data-toggle-month');
           if (this.expandedMonths.has(month)) {
             this.expandedMonths.delete(month);
           } else {
             this.expandedMonths.add(month);
           }
           this.renderTimelineStream();
-          return;
-        }
-
-        // 4. Toggle Context Menu (Three Dots ⋮)
-        const menuToggleBtn = e.target.closest('[data-action="toggle-menu"]');
-        if (menuToggleBtn) {
-          e.stopPropagation();
-          const actionsContainer = menuToggleBtn.closest('.task-actions');
-          const menu = actionsContainer?.querySelector('.task-context-menu');
-          const isCurrentlyOpen = menu && menu.style.display === 'flex';
-
-          this.closeAllContextMenus();
-
-          if (menu && !isCurrentlyOpen) {
-            menu.style.display = 'flex';
-            menuToggleBtn.classList.add('active');
-          }
-          return;
-        }
-
-        // 5. Edit Action
-        const editBtn = e.target.closest('[data-action="edit"]');
-        if (editBtn) {
-          e.stopPropagation();
-          const card = editBtn.closest('.task-card');
-          const id = card?.getAttribute('data-task-id');
-          this.closeAllContextMenus();
-          if (id) this.openEditModal(id);
-          return;
-        }
-
-        // 6. Delete Action (Fixed & Guaranteed Execution)
-        const deleteBtn = e.target.closest('[data-action="delete"]');
-        if (deleteBtn) {
-          e.stopPropagation();
-          const card = deleteBtn.closest('.task-card');
-          const id = card?.getAttribute('data-task-id');
-          const task = this.store.getAllTasks().find(t => t.id === id);
-          this.closeAllContextMenus();
-
-          if (id) {
-            const taskTitle = task ? task.title : '這筆事項';
-            if (confirm(`⚠️ 二次確認：\n您確定要刪除「${taskTitle}」這筆工作紀錄嗎？`)) {
-              this.store.deleteTask(id);
-              this.showToast('紀錄已成功刪除！');
-              this.renderTimelineStream();
-            }
-          }
-          return;
-        }
-      };
+        };
+      });
     }
 
     openClearModal() {
@@ -1894,7 +1904,7 @@ body {
     }
 
     openEditModal(id) {
-      const task = this.store.getAllTasks().find(t => t.id === id);
+      const task = this.store.getAllTasks().find(t => String(t.id) === String(id));
       if (!task) return;
 
       this.editingTaskId = id;
@@ -2054,8 +2064,17 @@ body {
     }
   }
 
+  // Safely close context menus when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.task-actions')) {
+      document.querySelectorAll('.task-context-menu').forEach(m => m.style.display = 'none');
+      document.querySelectorAll('.btn-more-options').forEach(b => b.classList.remove('active'));
+    }
+  });
+
   document.addEventListener('DOMContentLoaded', () => {
     window.app = new DailyWorkLogApp();
+    window.app.render();
   });
 })();
   </script>
